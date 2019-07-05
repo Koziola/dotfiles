@@ -338,6 +338,10 @@ you should place your code here."
   ;; Automatically set a timestamp when a TODO item enters the DONE state.
   (with-eval-after-load 'org
     (setq org-log-done 'time))
+
+  ;; Global file search keybinding
+  (spacemacs/set-leader-keys "os" 'find-name-dired)
+
   )
 
 ;; Do not write anything past this comment. This is where Emacs will
