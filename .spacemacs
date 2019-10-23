@@ -334,17 +334,22 @@ you should place your code here."
   ;; Customize TODO keywords
   (with-eval-after-load 'org
     (setq org-todo-keywords
-          '((sequence "TODO" "IN-PROGRESS" "BLOCKED" "|" "DONE"))))
+          '((sequence "TODO" "IN-PROGRESS" "BLOCKED" "REVIEW" "|" "DONE"))))
   ;; Set colors for customized TODO states
   (with-eval-after-load 'org
     (setq org-todo-keyword-faces
           '(("TODO" . org-warning)
             ("IN-PROGRESS" . yellow)
+            ("REVIEW" . yellow)
             ("BLOCKED" . red)
             ("DONE" . green))))
   ;; Automatically set a timestamp when a TODO item enters the DONE state.
   (with-eval-after-load 'org
     (setq org-log-done 'time))
+
+  (load-library "find-lisp")
+  (setq org-agenda-files
+        (find-lisp-find-files "~/Dropbox" "\.org$"))
 
   ;; Global file search keybinding
   (spacemacs/set-leader-keys "os" 'find-name-dired)
