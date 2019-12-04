@@ -1,0 +1,16 @@
+call plug#begin('~/.vim/plugged')
+
+Plug 'tpope/vim-fugitive'
+
+Plug 'tpope/vim-surround'
+Plug 'vim-airline/vim-airline'
+" Plug 'valloric/youcompleteme'
+Plug 'neoclide/coc.nvim', {'branch': 'release'}
+
+Plug 'ctrlpvim/ctrlp.vim'
+Plug 'morhetz/gruvbox'
+
+" On-demand loading for NerdTree
+Plug 'scrooloose/nerdtree', { 'on':  'NERDTreeToggle' }
+
+call plug#end()
