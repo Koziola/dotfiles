@@ -7,10 +7,17 @@ Plug 'vim-airline/vim-airline'
 " Plug 'valloric/youcompleteme'
 Plug 'neoclide/coc.nvim', {'branch': 'release'}
 
-Plug 'ctrlpvim/ctrlp.vim'
+"Plug 'ctrlpvim/ctrlp.vim'
+Plug 'junegunn/fzf', { 'dir': '~/.fzf', 'do': './install --all' }
+Plug 'junegunn/fzf.vim'
+
+
 Plug 'morhetz/gruvbox'
 
 " On-demand loading for NerdTree
 Plug 'scrooloose/nerdtree', { 'on':  'NERDTreeToggle' }
+Plug 'scrooloose/nerdcommenter'
+
+Plug 'jiangmiao/auto-pairs'
 
 call plug#end()
