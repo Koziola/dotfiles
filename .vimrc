@@ -53,6 +53,7 @@ set directory^=$HOME/.vim/swap//
 map <leader>ft :NERDTreeToggle<CR>
 " Keymap to open NERDTree with the current file automatically selected.
 map <leader>fT :NERDTreeFind<CR>
+let NERDTREEIGNORE = ['/*.git*', '.DS_STORE']
 " Keymap to go to definition
 "map <C-b> :YcmCompleter GoTo<CR>
 
@@ -69,7 +70,7 @@ let $JAVA_TOOL_OPTIONS="-javaagent:/Users/adamkoz/lombok/lombok.jar -Xbootclassp
 "COC-NVIM CONFIGURATION
 "----------------------
 " Use <c-space> to trigger completion.
-inoremap <silent><expr> <c-space> coc#refresh()
+inoremap <silent><expr><C-c> coc#refresh()
 " Use <cr> to confirm completion
 inoremap <expr> <cr> pumvisible() ? "\<C-y>" : "\<C-g>u\<CR>"
 " Remap keys for gotos
