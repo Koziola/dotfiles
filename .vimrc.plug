@@ -3,8 +3,8 @@ call plug#begin('~/.vim/plugged')
 Plug 'tpope/vim-fugitive'
 
 Plug 'tpope/vim-surround'
+" Better status bar
 Plug 'vim-airline/vim-airline'
-" Plug 'valloric/youcompleteme'
 Plug 'neoclide/coc.nvim', {'branch': 'release'}
 
 "Plug 'ctrlpvim/ctrlp.vim'
@@ -12,12 +12,20 @@ Plug 'junegunn/fzf', { 'dir': '~/.fzf', 'do': './install --all' }
 Plug 'junegunn/fzf.vim'
 
 
+"Gruvbox editor theme
 Plug 'morhetz/gruvbox'
 
 " On-demand loading for NerdTree
 Plug 'scrooloose/nerdtree', { 'on':  'NERDTreeToggle' }
 Plug 'scrooloose/nerdcommenter'
 
+" Automatically insert closing pairs for certain characters
 Plug 'jiangmiao/auto-pairs'
+
+" Buffer explorer
+Plug 'jlanzarotta/bufexplorer'
+
+" Kill buffers without losing splits (thank god)
+Plug 'qpkorr/vim-bufkill'
 
 call plug#end()
