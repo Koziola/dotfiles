@@ -17,7 +17,8 @@ set softtabstop=4
 set shiftwidth=4
 set expandtab
 set nowrap
-set colorcolumn=80
+set colorcolumn=120
+set splitright
 " sets cwd to whatever file is in view.  Better omni-completion
 set autochdir
 
