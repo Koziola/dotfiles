@@ -20,12 +20,16 @@ set nowrap
 set colorcolumn=120
 set splitright
 " sets cwd to whatever file is in view.  Better omni-completion
-set autochdir
+" set autochdir
+
+" Coc-nvim github settings
+set updatetime=300
+set shortmess+=c
+set signcolumn=yes
+
 
 " Allow backspace to remove indent and move between lines
 set backspace=indent,eol,start
-" 2 space TAB for YAML files
-autocmd Filetype yaml setlocal shiftwidth=2 softtabstop=2 expandtab
 
 set showmatch
 "set the color scheme
@@ -55,11 +59,6 @@ map <leader>ft :NERDTreeToggle<CR>
 " Keymap to open NERDTree with the current file automatically selected.
 map <leader>fT :NERDTreeFind<CR>
 let NERDTREEIGNORE = ['/*.git*', '.DS_STORE']
-" Keymap to go to definition
-"map <C-b> :YcmCompleter GoTo<CR>
-
-"Ctrl-P definition
-let g:ctrlp_user_command = ['.git/', 'git --git-dir=%s/.git ls-files -oc --exclude-standard']
 
 "map fzf to Ctrl-P
 map <C-p> :Files<CR>
@@ -73,7 +72,9 @@ let $JAVA_TOOL_OPTIONS="-javaagent:/Users/adamkoz/lombok/lombok.jar -Xbootclassp
 " Use <c-space> to trigger completion.
 inoremap <silent><expr><C-c> coc#refresh()
 " Use <cr> to confirm completion
-inoremap <expr> <cr> pumvisible() ? "\<C-y>" : "\<C-g>u\<CR>"
+" inoremap <expr> <cr> pumvisible() ? "\<C-y>" : "\<C-g>u\<CR>"
+inoremap <expr> <cr> complete_info()["selected"] != "-1" ? "\<C-y>" : "\<C-g>u\<CR>"
+
 " Remap keys for gotos
 nmap <silent> gd <Plug>(coc-definition)
 nmap <silent> gr <Plug>(coc-references)

@@ -1,6 +1,9 @@
 {
-    "suggest.autoTrigger": "trigger",
+    "java.jdt.ls.home": "/Users/adamkoz/Downloads/eclipse_jdt/jdt-language-server-0.9.0-201711302113/",
+    "java.format.onType.enabled": true,
+    "java.completion.overwrite": false,
     "suggest.timeout": 500,
-    "suggest.noselect": false,
-    "suggest.floatEnable": false
+    "suggest.enablePreview": true,
+    "suggest.floatEnable": true,
+    "suggest.autoTrigger": "trigger"
 }

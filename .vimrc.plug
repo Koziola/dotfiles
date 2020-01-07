@@ -3,8 +3,13 @@ call plug#begin('~/.vim/plugged')
 Plug 'tpope/vim-fugitive'
 
 Plug 'tpope/vim-surround'
+" Detect current file's indentation settings
+Plug 'tpope/vim-sleuth'
+
 " Better status bar
 Plug 'vim-airline/vim-airline'
+
+" coc-nvim - turns this bitch into an IDE
 Plug 'neoclide/coc.nvim', {'branch': 'release'}
 
 "Plug 'ctrlpvim/ctrlp.vim'
@@ -15,7 +20,7 @@ Plug 'junegunn/fzf.vim'
 "Gruvbox editor theme
 Plug 'morhetz/gruvbox'
 
-" On-demand loading for NerdTree
+"" On-demand loading for NerdTree
 Plug 'scrooloose/nerdtree', { 'on':  'NERDTreeToggle' }
 Plug 'scrooloose/nerdcommenter'
 
@@ -27,5 +32,9 @@ Plug 'jlanzarotta/bufexplorer'
 
 " Kill buffers without losing splits (thank god)
 Plug 'qpkorr/vim-bufkill'
+
+"TS syntax highlighting
+Plug 'ianks/vim-tsx'
+Plug 'leafgarland/typescript-vim'
 
 call plug#end()
