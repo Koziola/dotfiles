@@ -63,10 +63,6 @@ let NERDTREEIGNORE = ['/*.git*', '.DS_STORE']
 "map fzf to Ctrl-P
 map <C-p> :Files<CR>
 
-
-"java Lombok support
-let $JAVA_TOOL_OPTIONS="-javaagent:/Users/adamkoz/lombok/lombok.jar -Xbootclasspath/p:/Users/adamkoz/lombok/lombok.jar"
-
 "COC-NVIM CONFIGURATION
 "----------------------
 " Use <c-space> to trigger completion.
