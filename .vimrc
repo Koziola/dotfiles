@@ -12,7 +12,7 @@ set number
 " Allow hidden buffers (buffers that haven't been saved)
 set hidden
 
-filetype plugin indent on
+" filetype plugin indent on
 set softtabstop=4
 set shiftwidth=4
 set expandtab
@@ -45,8 +45,18 @@ let mapleader=" "
 " actually executes the command
 map <leader><TAB> :bp<CR>
 
+" Close the current buffer
+map <leader>d :bd<CR>
+
+" Close the current buffer, but keep the window open (requires vim-bufkill
+" extension)
+map <leader>D :BD<CR>
+
 " List all open buffers
 map <leader>bb :buffers<CR>
+
+" Reload the current buffer from the file system
+map <leader>r :e<CR>
 
 "Swap file location
 set directory^=$HOME/.vim/swap//
@@ -58,10 +68,15 @@ set directory^=$HOME/.vim/swap//
 map <leader>ft :NERDTreeToggle<CR>
 " Keymap to open NERDTree with the current file automatically selected.
 map <leader>fT :NERDTreeFind<CR>
+" Focus NERDTree
+map <leader>t :NERDTreeFocus<CR>
 let NERDTREEIGNORE = ['/*.git*', '.DS_STORE']
 
 "map fzf to Ctrl-P
 map <C-p> :Files<CR>
+
+"map leader-g to open git status window
+map <leader>g :Gstatus<CR>
 
 "COC-NVIM CONFIGURATION
 "----------------------
@@ -78,7 +93,7 @@ nmap <silent> gr <Plug>(coc-references)
 nnoremap <silent> K :call <SID>show_documentation()<CR>
 
 function! s:show_documentation()
-  if (index(['vim','help'], &filetype) >= 0)
+ if (index(['vim','help'], &filetype) >= 0)
     execute 'h '.expand('<cword>')
   else
     call CocAction('doHover')
