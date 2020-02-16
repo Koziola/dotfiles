@@ -10,7 +10,7 @@ Plug 'tpope/vim-sleuth'
 Plug 'vim-airline/vim-airline'
 
 " coc-nvim - turns this bitch into an IDE
-Plug 'neoclide/coc.nvim', {'branch': 'release'}
+"Plug 'neoclide/coc.nvim', {'branch': 'release'}
 
 "Plug 'ctrlpvim/ctrlp.vim'
 Plug 'junegunn/fzf', { 'dir': '~/.fzf', 'do': './install --all' }
@@ -35,5 +35,8 @@ Plug 'qpkorr/vim-bufkill'
 "TS syntax highlighting
 Plug 'ianks/vim-tsx'
 Plug 'leafgarland/typescript-vim'
+
+"YOU COMPLETE ME <333333
+Plug 'valloric/youcompleteme'
 
 call plug#end()
