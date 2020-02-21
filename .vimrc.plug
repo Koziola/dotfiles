@@ -36,7 +36,12 @@ Plug 'qpkorr/vim-bufkill'
 Plug 'ianks/vim-tsx'
 Plug 'leafgarland/typescript-vim'
 
+" post install (yarn install | npm install) then load plugin only for editing supported files
+Plug 'prettier/vim-prettier', { 'do': 'yarn install' }
+
 "YOU COMPLETE ME <333333
 Plug 'valloric/youcompleteme'
+
+Plug 'fatih/vim-go', {'do': ':GoUpdateBinaries'}
 
 call plug#end()
