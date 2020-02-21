@@ -117,3 +117,7 @@ map <leader>g :Gstatus<CR>
 set rtp+=~/.vim/plugged/youcompleteme
 nnoremap <silent> <Leader>gd :YcmCompleter GoTo<CR>
 nnoremap <silent> <Leader>ac :YcmCompleter FixIt<CR>
+nnoremap <silent> <Leader>k :YcmCompleter GetDoc<CR>
+nnoremap <silent> <Leader>rn :YcmCompleter RefactorRename
+" Turn off automatic completion (need to use Ctrl-space to trigger it)
+let g:ycm_auto_trigger=0
