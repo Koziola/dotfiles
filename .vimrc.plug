@@ -10,6 +10,7 @@ Plug 'tpope/vim-sleuth'
 
 " Better status bar
 Plug 'vim-airline/vim-airline'
+Plug 'vim-airline/vim-airline-themes'
 
 "Plug 'ctrlpvim/ctrlp.vim'
 Plug 'junegunn/fzf', { 'dir': '~/.fzf', 'do': './install --all' }
@@ -23,7 +24,7 @@ Plug 'scrooloose/nerdtree', { 'on':  'NERDTreeToggle' }
 Plug 'scrooloose/nerdcommenter'
 
 " Automatically insert closing pairs for certain characters
-Plug 'jiangmiao/auto-pairs'
+"Plug 'jiangmiao/auto-pairs'
 
 " Buffer explorer
 Plug 'jlanzarotta/bufexplorer'
@@ -38,12 +39,13 @@ Plug 'leafgarland/typescript-vim'
 " post install (yarn install | npm install) then load plugin only for editing supported files
 Plug 'prettier/vim-prettier', { 'do': 'yarn install' }
 
-"YOU COMPLETE ME <333333
-Plug 'valloric/youcompleteme'
-"
 " coc-nvim - turns this bitch into an IDE
-"Plug 'neoclide/coc.nvim', {'branch': 'release'}
+Plug 'neoclide/coc.nvim', {'branch': 'release'}
 
 Plug 'fatih/vim-go', {'do': ':GoUpdateBinaries'}
+
+"Plug 'dense-analysis/ale'
+Plug 'vim-syntastic/syntastic' 
+"Plug 'Shougo/deoplete.nvim'
 
 call plug#end()
