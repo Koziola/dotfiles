@@ -25,6 +25,7 @@ Plug 'scrooloose/nerdcommenter'
 
 " Automatically insert closing pairs for certain characters
 "Plug 'jiangmiao/auto-pairs'
+Plug 'raimondi/delimitmate'
 
 " Buffer explorer
 Plug 'jlanzarotta/bufexplorer'
@@ -44,8 +45,7 @@ Plug 'neoclide/coc.nvim', {'branch': 'release'}
 
 Plug 'fatih/vim-go', {'do': ':GoUpdateBinaries'}
 
-"Plug 'dense-analysis/ale'
-Plug 'vim-syntastic/syntastic' 
-"Plug 'Shougo/deoplete.nvim'
+Plug 'dense-analysis/ale'
+"Plug 'vim-syntastic/syntastic' 
 
 call plug#end()
