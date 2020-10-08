@@ -59,6 +59,10 @@ map <leader>bb :buffers<CR>
 " Reload the current buffer from the file system
 map <leader>r :e<CR>
 
+" <C-^> is to hop back to the last buffer.  Since it's also a mosh shortcut,
+" rebinding it to <C-b> which is also more ergonomic.
+map <C-b> <C-^>
+
 "Swap file location
 set directory^=$HOME/.vim/swap//
 
@@ -119,25 +123,20 @@ fun! InitCoc()
   nmap <leader>f  <Plug>(coc-format-selected)
 endfun
 
-"syntastic config
-let g:syntastic_go_checkers = ['go']
-set statusline+=%#warningmsg#
-set statusline+=%{SyntasticStatuslineFlag()}
-set statusline+=%*
-let g:syntastic_check_on_open = 1
-let g:syntastic_check_on_wq = 0
-
-"deoplete config
-let g:deoplete#enable_at_startup = 1
-
 fun! InitVimGo() 
   " Renamp for rename current word
   nmap <leader>rn <Plug>(go-rename)
   " Automatically import things
   nmap <leader>i <Plug>(go-imports)
-
+  " Describe selected syntax
+  "imap <leader>, <Plug>(go-info)
+  nmap <leader>, <Plug>(go-info)
+  "nmap <C-space> go#complete#Complete()
+  let g:go_imports_autosave = 1
+  "let g:go_auto_type_info = 1
 endfun
+
 " Choose completion engine
-:call InitCoc()
+":call InitCoc()
 autocmd FileType go :call InitVimGo()
-"autocmd FileType java,ts,js,tsx :call InitCoc()
+autocmd FileType java,ts,js,tsx :call InitCoc()
