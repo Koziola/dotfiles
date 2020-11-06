@@ -77,16 +77,27 @@ map <leader>fT :NERDTreeFind<CR>
 map <leader>t :NERDTreeFocus<CR>
 let NERDTREEIGNORE = ['/*.git*', '.DS_STORE']
 
-"map fzf to Ctrl-P
-"map <C-p> :Files<CR>
-
+"FZF-VIM
+"-------
 " fzf file fuzzy search that respects .gitignore
 " If in git directory, show only files that are committed, staged, or unstaged
 " else use regular :Files
 nnoremap <expr> <C-p> (len(system('git rev-parse')) ? ':Files' : ':GFiles --exclude-standard --others --cached')."\<cr>"
 
+"GIT-FUGITIVE
+"------------
 "map leader-g to open git status window
 map <leader>g :Gstatus<CR>
+
+"ALE CONFIG
+"----------
+let g:ale_linters = { 'java': []}
+
+"PRETTIER_CONFIG
+"---------------
+let g:prettier#autoformat_require_pragma = 0
+let g:prettier#exec_cmd_async = 1
+let g:prettier#quickfix_enabled = 0
 
 "COC-NVIM CONFIGURATION
 "----------------------
@@ -131,12 +142,15 @@ fun! InitVimGo()
   " Describe selected syntax
   "imap <leader>, <Plug>(go-info)
   nmap <leader>, <Plug>(go-info)
-  "nmap <C-space> go#complete#Complete()
   let g:go_imports_autosave = 1
-  "let g:go_auto_type_info = 1
+  let g:go_doc_popup_window = 1
+  inoremap <C-space> <C-x><C-o>
+  set noshowmode
 endfun
 
 " Choose completion engine
-":call InitCoc()
-autocmd FileType go :call InitVimGo()
-autocmd FileType java,ts,js,tsx :call InitCoc()
+augroup LSP
+  autocmd!
+  autocmd FileType go :call InitVimGo()
+  autocmd FileType java,typescript,javascript :call InitCoc()
+augroup END
