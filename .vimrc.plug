@@ -33,17 +33,18 @@ Plug 'jlanzarotta/bufexplorer'
 " Kill buffers without losing splits (thank god)
 Plug 'qpkorr/vim-bufkill'
 
-"TS syntax highlighting
-Plug 'ianks/vim-tsx'
-Plug 'leafgarland/typescript-vim'
-
 " post install (yarn install | npm install) then load plugin only for editing supported files
 Plug 'prettier/vim-prettier', { 'do': 'yarn install' }
 
 " coc-nvim - turns this bitch into an IDE
-Plug 'neoclide/coc.nvim', {'branch': 'release'}
+"Plug 'neoclide/coc.nvim', {'branch': 'release'}
 
-Plug 'fatih/vim-go', {'do': ':GoUpdateBinaries'}
+"Plug 'fatih/vim-go', {'do': ':GoUpdateBinaries'}
+
+"Neovim LSP Plugins
+Plug 'neovim/nvim-lspconfig'
+Plug 'nvim-lua/completion-nvim'
+Plug 'tjdevries/lsp_extensions.nvim'
 
 Plug 'dense-analysis/ale'
 "Plug 'vim-syntastic/syntastic' 
