@@ -33,9 +33,10 @@ set signcolumn=yes
 set backspace=indent,eol,start
 
 set showmatch
+
 "set the color scheme
-colo gruvbox
-set background=dark
+set background=light
+colorscheme base16-one-light
 
 " Set leader key to spacebar vim
 nnoremap <SPACE> <Nop>
@@ -92,88 +93,97 @@ map <leader>g :Gstatus<CR>
 "ALE CONFIG
 "----------
 let g:ale_linters = { 'java': []}
+let g:ale_set_signs = 1
+let g:ale_set_highlights = 0
+let g:ale_sign_error = '✘'
 
 "PRETTIER_CONFIG
 "---------------
 let g:prettier#autoformat_require_pragma = 0
 let g:prettier#exec_cmd_async = 1
 let g:prettier#quickfix_enabled = 0
+"autocmd BufWritePre *.js,*.jsx,*.mjs,*.ts,*.tsx,*.css,*.less,*.scss,*.json,*.graphql,*.md,*.vue,*.yaml,*.html Prettier
 
-""COC-NVIM CONFIGURATION
-""----------------------
-"fun! InitCoc()
-  "" Use <c-space> to trigger completion.
-  "inoremap <silent><expr><C-space> coc#refresh()
-  "" Use <cr> to confirm completion
-  "inoremap <expr> <cr> pumvisible() ? "\<C-y>" : "\<C-g>u\<CR>"
-  "inoremap <expr> <cr> complete_info()["selected"] != "-1" ? "\<C-y>" : "\<C-g>u\<CR>"
+"COC-NVIM CONFIGURATION
+"----------------------
+fun! InitCoc()
+  " Use <c-space> to trigger completion.
+  imap <silent><expr><C-space> coc#refresh()
+  " Use <cr> to confirm completion
+  "imap <expr> <cr> pumvisible() ? "\<C-y>" : "\<C-g>u\<CR>"
+  "imap <expr> <cr> complete_info()["selected"] != "-1" ? "\<C-y>" : "\<C-g>u\<CR>"
+  inoremap <silent><expr> <cr> pumvisible() ? coc#_select_confirm()
+                              \: "\<C-g>u\<CR>\<c-r>=coc#on_enter()\<CR>"
 
-  "" Remap keys for gotos
-  "nmap <silent> gd <Plug>(coc-definition)
-  "nmap <silent> <Leader>r <Plug>(coc-references)
-  "" Use K to show documentation in preview window
-  "nnoremap <silent> K :call <SID>show_documentation()<CR>
+  " Remap keys for gotos
+  nmap <silent> gd <Plug>(coc-definition)
+  nmap <silent> <Leader>r <Plug>(coc-references)
+  " Use K to show documentation in preview window
+  nmap <silent> K :call <SID>show_documentation()<CR>
 
-  "function! s:show_documentation()
-   "if (index(['vim','help'], &filetype) >= 0)
-      "execute 'h '.expand('<cword>')
-    "else
-      "call CocAction('doHover')
-    "endif
-  "endfunction
+  function! s:show_documentation()
+   if (index(['vim','help'], &filetype) >= 0)
+      execute 'h '.expand('<cword>')
+    else
+      call CocAction('doHover')
+    endif
+  endfunction
 
-  "" Renamp for rename current word
-  "nmap <leader>rn <Plug>(coc-rename)
-  "" Remap for do codeAction of current line
-  "nmap <leader>ac  <Plug>(coc-codeaction)
-  "" Fix autofix problem of current line
-  "nmap <leader>qf  <Plug>(coc-fix-current)
+  " Renamp for rename current word
+  nmap <leader>rn <Plug>(coc-rename)
+  " Remap for do codeAction of current line
+  nmap <leader>ac  <Plug>(coc-codeaction)
+  " Fix autofix problem of current line
+  nmap <leader>qf  <Plug>(coc-fix-current)
 
-  "" Format selected regions
-  "xmap <leader>f  <Plug>(coc-format-selected)
-  "nmap <leader>f  <Plug>(coc-format-selected)
-"endfun
+  " Format selected regions
+  xmap <leader>f  <Plug>(coc-format-selected)
+  nmap <leader>f  <Plug>(coc-format-selected)
+endfun
 
-"fun! InitVimGo() 
-  "" Renamp for rename current word
-  "nmap <leader>rn <Plug>(go-rename)
-  "" Automatically import things
-  "nmap <leader>i <Plug>(go-imports)
-  "" Describe selected syntax
-  ""imap <leader>, <Plug>(go-info)
-  "nmap <leader>, <Plug>(go-info)
-  "let g:go_imports_autosave = 1
-  "let g:go_doc_popup_window = 1
-  "inoremap <C-space> <C-x><C-o>
-  "set noshowmode
-"endfun
+fun! InitVimGo() 
+  " Renamp for rename current word
+  nmap <leader>rn <Plug>(go-rename)
+  " Automatically import things
+  nmap <leader>i <Plug>(go-imports)
+  " Describe selected syntax
+  "imap <leader>, <Plug>(go-info)
+  nmap <leader>, <Plug>(go-info)
+  let g:go_imports_autosave = 1
+  let g:go_doc_popup_window = 1
+  inoremap <C-space> <C-x><C-o>
+  set noshowmode
+endfun
 
-"" Choose completion engine
-"augroup LSP
-  "autocmd!
-  "autocmd FileType go :call InitVimGo()
-  "autocmd FileType java,typescript,javascript :call InitCoc()
-"augroup END
+" Choose completion engine
+augroup LSP
+  autocmd!
+  autocmd FileType go :call InitVimGo()
+  autocmd FileType java,javascript,javascriptreact,typescript,typescriptreact :call InitCoc()
+augroup END
 
 "NEOVIM LSP CLIENT CONFIG
 "------------------------
-if filereadable(expand("~/.vim/plugged/nvim-lspconfig/plugin/nvim_lsp.vim"))
-  let g:completion_matching_strategy_list = ['exact', 'substring', 'fuzzy']
+"if filereadable(expand("~/.vim/plugged/nvim-lspconfig/plugin/lspconfig.vim"))
+  "let g:completion_matching_strategy_list = ['exact', 'substring', 'fuzzy']
   "let g:completion_enable_auto_popup = 0
-  lua require'nvim_lsp'.tsserver.setup{ on_attach=require'completion'.on_attach }
-  lua require'nvim_lsp'.gopls.setup{ on_attach=require'completion'.on_attach }
+  ""lua require'lspconfig'.tsserver.setup{ on_attach=require'completion'.on_attach }
+  ""Go LSP also has a bug...
+  ""lua require'lspconfig'.gopls.setup{ on_attach=require'completion'.on_attach }
+  ""Java LSP has a bug - not currently working.
+  ""lua require'lspconfig'.jdtls.setup{ on_attach=require'completion'.on_attach }
 
-  "inoremap <C-v> <Plug>(completion-trigger)
-  "inoremap <C-@> <C-Space>
-  "imap <silent><expr><C-space> <Plug>(completion-trigger)
+  ""inoremap <C-v> <Plug>(completion-trigger)
+  ""inoremap <C-@> <C-Space>
+  "imap <silent> <C-Space> <Plug>(completion_trigger)
   "imap <tab> <Plug>(completion_smart_tab)
-  nmap <silent> gd :lua vim.lsp.buf.definition()<CR>
-  nmap gi :lua vim.lsp.buf.implementation()<CR>
-  nmap <leader>k :lua vim.lsp.buf.signature_help()<CR>
-  nmap <silent> <leader>r :lua vim.lsp.buf.references()<CR>
-  nmap <leader>rn :lua vim.lsp.buf.rename()<CR>
-  nmap <leader>h :lua vim.lsp.buf.hover()<CR>
-  nmap <leader>ac :lua vim.lsp.buf.code_action()<CR>
-  nmap <leader>sd :lua vim.lsp.util.show_line_diagnostics(); vim.lsp.util.show_line_diagnostics()<CR>
-  set completeopt=menuone,noinsert,noselect
-endif
+  "nmap <silent> gd :lua vim.lsp.buf.definition()<CR>
+  "nmap gi :lua vim.lsp.buf.implementation()<CR>
+  "nmap <leader>k :lua vim.lsp.buf.signature_help()<CR>
+  "nmap <silent> <leader>r :lua vim.lsp.buf.references()<CR>
+  "nmap <leader>rn :lua vim.lsp.buf.rename()<CR>
+  "nmap <leader>h :lua vim.lsp.buf.hover()<CR>
+  "nmap <leader>ac :lua vim.lsp.buf.code_action()<CR>
+  "nmap <leader>sd :lua vim.lsp.util.show_line_diagnostics(); vim.lsp.util.show_line_diagnostics()<CR>
+  "set completeopt=menuone,noinsert,noselect
+"endif

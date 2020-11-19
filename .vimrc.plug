@@ -18,6 +18,7 @@ Plug 'junegunn/fzf.vim'
 
 "Gruvbox editor theme
 Plug 'morhetz/gruvbox'
+Plug 'chriskempson/base16-vim'
 
 "" On-demand loading for NerdTree
 Plug 'scrooloose/nerdtree', { 'on':  'NERDTreeToggle' }
@@ -37,9 +38,9 @@ Plug 'qpkorr/vim-bufkill'
 Plug 'prettier/vim-prettier', { 'do': 'yarn install' }
 
 " coc-nvim - turns this bitch into an IDE
-"Plug 'neoclide/coc.nvim', {'branch': 'release'}
+Plug 'neoclide/coc.nvim', {'branch': 'release'}
 
-"Plug 'fatih/vim-go', {'do': ':GoUpdateBinaries'}
+Plug 'fatih/vim-go', {'do': ':GoUpdateBinaries'}
 
 "Neovim LSP Plugins
 Plug 'neovim/nvim-lspconfig'
