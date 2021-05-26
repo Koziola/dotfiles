@@ -24,7 +24,7 @@ set splitright
 " set autochdir
 
 " Coc-nvim github settings
-set updatetime=50
+set updatetime=250
 set shortmess+=c
 set signcolumn=yes
 
@@ -35,8 +35,9 @@ set backspace=indent,eol,start
 set showmatch
 
 "set the color scheme
-set background=light
-colorscheme base16-one-light
+set background=dark
+colorscheme base16-gruvbox-dark-soft
+set termguicolors
 
 " Set leader key to spacebar vim
 nnoremap <SPACE> <Nop>
@@ -77,13 +78,14 @@ map <leader>fT :NERDTreeFind<CR>
 " Focus NERDTree
 map <leader>t :NERDTreeFocus<CR>
 let NERDTREEIGNORE = ['/*.git*', '.DS_STORE']
+let NERDTreeShowHidden=1
 
 "FZF-VIM
 "-------
 " fzf file fuzzy search that respects .gitignore
 " If in git directory, show only files that are committed, staged, or unstaged
 " else use regular :Files
-nnoremap <expr> <C-p> (len(system('git rev-parse')) ? ':Files' : ':GFiles --exclude-standard --others --cached')."\<cr>"
+"nnoremap <expr> <C-p> (len(system('git rev-parse')) ? ':Files' : ':GFiles --exclude-standard --others --cached')."\<cr>"
 
 "GIT-FUGITIVE
 "------------
@@ -93,9 +95,11 @@ map <leader>g :Gstatus<CR>
 "ALE CONFIG
 "----------
 let g:ale_linters = { 'java': []}
-let g:ale_set_signs = 1
 let g:ale_set_highlights = 0
+let g:ale_set_signs = 1
 let g:ale_sign_error = '✘'
+let g:ale_sign_style_error = 'E'
+let g:ale_sign_style_warning = 'W'
 
 "PRETTIER_CONFIG
 "---------------
@@ -103,6 +107,27 @@ let g:prettier#autoformat_require_pragma = 0
 let g:prettier#exec_cmd_async = 1
 let g:prettier#quickfix_enabled = 0
 "autocmd BufWritePre *.js,*.jsx,*.mjs,*.ts,*.tsx,*.css,*.less,*.scss,*.json,*.graphql,*.md,*.vue,*.yaml,*.html Prettier
+
+"FLOATING TERMINAL WINDOW CONFIG
+"-------------------------------
+if filereadable(expand("~/.vim/plugged/vim-floaterm/plugin/floaterm.vim"))
+   nmap <leader>tt :FloatermNew! fish<CR>
+   nmap <leader>th :FloatermToggle<CR>
+   nmap <leader>tp :FloatermPrev<CR>
+   nmap <leader>tn :FloatermNext<CR>
+   nmap <leader>tk :FloatermKill<CR>
+   "Use esc to escape terminal mode
+   tnoremap <S-z> <C-\><C-n>
+endif
+
+"AIRLINE CONFIG
+if filereadable(expand("~/.vim/plugged/vim-airline/plugin/airline.vim"))
+  let g:airline_theme = "bubblegum"
+  let g:airline_section_y = ""
+  let g:airline_section_warning = ""
+  let g:airline_section_z = ""
+  let g:airline_skip_empty_sections = 1
+endif
 
 "COC-NVIM CONFIGURATION
 "----------------------
@@ -139,9 +164,24 @@ fun! InitCoc()
   " Format selected regions
   xmap <leader>f  <Plug>(coc-format-selected)
   nmap <leader>f  <Plug>(coc-format-selected)
+  autocmd CursorHold * silent call CocActionAsync('highlight')
 endfun
 
-fun! InitVimGo() 
+fun! SetWorkspaceFolders() abort
+  " Only set g:WorkspaceFolders if it is not already set
+  "if exists("g:WorkspaceFolders") | return | endif
+  if executable("findup")
+      let l:ws_dir = trim(system("cd '" . expand("%:h") . "' && findup packageInfo"))
+      " Bemol conveniently generates a '$WS_DIR/.bemol/ws_root_folders' file, so let's leverage it
+      let l:folders_file = l:ws_dir . "/.bemol/ws_root_folders"
+      if filereadable(l:folders_file)
+          let l:ws_folders = readfile(l:folders_file)
+          let g:WorkspaceFolders = filter(l:ws_folders, "isdirectory(v:val)")
+      endif
+  endif
+endfun
+
+fun! InitVimGo()
   " Renamp for rename current word
   nmap <leader>rn <Plug>(go-rename)
   " Automatically import things
@@ -149,6 +189,7 @@ fun! InitVimGo()
   " Describe selected syntax
   "imap <leader>, <Plug>(go-info)
   nmap <leader>, <Plug>(go-info)
+  nmap <leader>r <Plug>(go-referrers)
   let g:go_imports_autosave = 1
   let g:go_doc_popup_window = 1
   inoremap <C-space> <C-x><C-o>
@@ -159,19 +200,34 @@ endfun
 augroup LSP
   autocmd!
   autocmd FileType go :call InitVimGo()
-  autocmd FileType java,javascript,javascriptreact,typescript,typescriptreact :call InitCoc()
+  autocmd FileType java,javascript,javascriptreact,python,typescript,typescriptreact,scala :call InitCoc()
 augroup END
 
+
+augroup CocWS
+  autocmd!
+  autocmd FileType java :call SetWorkspaceFolders()
+augroup END
 "NEOVIM LSP CLIENT CONFIG
 "------------------------
 "if filereadable(expand("~/.vim/plugged/nvim-lspconfig/plugin/lspconfig.vim"))
   "let g:completion_matching_strategy_list = ['exact', 'substring', 'fuzzy']
   "let g:completion_enable_auto_popup = 0
+  "lua vim.lsp.set_log_level("debug")
+  "let JAVA_TOOL_OPTIONS="-javaagent:/home/adamkoz/dev/lombok-1.18.12.jar -Xbootclasspath/p:/home/adamkoz/dev/lombok-1.18.12.jar"
   ""lua require'lspconfig'.tsserver.setup{ on_attach=require'completion'.on_attach }
   ""Go LSP also has a bug...
   ""lua require'lspconfig'.gopls.setup{ on_attach=require'completion'.on_attach }
   ""Java LSP has a bug - not currently working.
-  ""lua require'lspconfig'.jdtls.setup{ on_attach=require'completion'.on_attach }
+  "lua require'lspconfig'.jdtls.setup {} 
+  "lua << EOF
+  "require'lspconfig'.jdtls.setup { 
+      "on_attach=require'completion'.on_attach,
+      "init_options = {
+        "jvm_args = "-javaagent:/home/adamkoz/dev/lombok.jar -Xbootclasspath/a:/home/adamkoz/dev/lombok.jar"
+      "}
+  "}
+"EOF
 
   ""inoremap <C-v> <Plug>(completion-trigger)
   ""inoremap <C-@> <C-Space>
@@ -187,3 +243,55 @@ augroup END
   "nmap <leader>sd :lua vim.lsp.util.show_line_diagnostics(); vim.lsp.util.show_line_diagnostics()<CR>
   "set completeopt=menuone,noinsert,noselect
 "endif
+
+"TELESCOPE CONFIG
+"----------------
+if filereadable(expand("~/.vim/plugged/telescope.nvim/plugin/telescope.vim"))
+  nnoremap <C-p> :lua require'telescope.builtin'.find_files{}<cr>
+  nnoremap <leader>rg <cmd>Telescope live_grep<cr>
+  nnoremap <leader>bb <cmd>Telescope buffers<cr>
+  "Configure esc to close the picker window.
+  lua << EOF
+  local actions = require('telescope.actions')
+  require('telescope').setup{
+    defaults = {
+      mappings = {
+        i = {
+          ["<esc>"] = actions.close
+        },
+      },
+      file_ignore_patterns = {"build/*", "env/*", "release-info/*"}
+    }
+  }
+EOF
+endif
+
+"TREESITTER CONFIG
+"-----------------
+if filereadable(expand("~/.vim/plugged/nvim-treesitter/plugin/nvim-treesitter.vim"))
+    lua << EOF
+        require'nvim-treesitter.configs'.setup {
+        -- Modules and its options go here
+        highlight = { enable = true },
+        incremental_selection = { enable = true },
+        textobjects = { enable = true },
+        }
+EOF
+endif
+
+if filereadable(expand("~/.vim/plugged/vimspector/plugin/vimspector.vim"))
+  nnoremap <leader>c :call vimspector#Continue()<cr>
+  nnoremap <leader>i :call vimspector#StepInto()<cr>
+  nnoremap <leader>o :call vimspector#StepOver()<cr>
+  nnoremap <leader>u :call vimspector#StepOut()<cr>
+  nnoremap <leader>q :VimspectorReset<cr>
+  nnoremap <leader>tb :call vimspector#ToggleBreakpoint()<cr>
+endif
+
+if filereadable(expand("~/.vim/plugged/vim-test/plugin/test.vim"))
+    let g:test#custom_runners = {'Java': ["braziltest"]}
+    "let g:test#enabled_runners = ["java#braziltest"]
+    let g:test#java#runner = "braziltest"
+    "let test#java#maventest#executable = "brazil-build test"
+    let g:test#strategy = "neovim"
+endif

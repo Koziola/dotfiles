@@ -1,20 +1,18 @@
+" Install vim-plug if it doesn't exist
+if empty(glob('~/.vim/autoload/plug.vim'))
+  silent !curl -fLo ~/.vim/autoload/plug.vim --create-dirs
+    \ https://raw.githubusercontent.com/junegunn/vim-plug/master/plug.vim
+  autocmd VimEnter * PlugInstall --sync | source $MYVIMRC
+endif
+
 call plug#begin('~/.vim/plugged')
 
 " Git related stuff
 Plug 'tpope/vim-fugitive'
-Plug 'airblade/vim-gitgutter'
 
 Plug 'tpope/vim-surround'
 " Detect current file's indentation settings
 Plug 'tpope/vim-sleuth'
-
-" Better status bar
-Plug 'vim-airline/vim-airline'
-Plug 'vim-airline/vim-airline-themes'
-
-"Plug 'ctrlpvim/ctrlp.vim'
-Plug 'junegunn/fzf', { 'dir': '~/.fzf', 'do': './install --all' }
-Plug 'junegunn/fzf.vim'
 
 "Gruvbox editor theme
 Plug 'morhetz/gruvbox'
@@ -25,7 +23,6 @@ Plug 'scrooloose/nerdtree', { 'on':  'NERDTreeToggle' }
 Plug 'scrooloose/nerdcommenter'
 
 " Automatically insert closing pairs for certain characters
-"Plug 'jiangmiao/auto-pairs'
 Plug 'raimondi/delimitmate'
 
 " Buffer explorer
@@ -47,7 +44,19 @@ Plug 'neovim/nvim-lspconfig'
 Plug 'nvim-lua/completion-nvim'
 Plug 'tjdevries/lsp_extensions.nvim'
 
-Plug 'dense-analysis/ale'
-"Plug 'vim-syntastic/syntastic' 
+"Floating terminal windows
+Plug 'voldikss/vim-floaterm'
+
+"Telescope (fuzzy finders)
+Plug 'nvim-lua/popup.nvim'
+Plug 'nvim-lua/plenary.nvim'
+Plug 'nvim-telescope/telescope.nvim'
+
+"Treesitter (syntax highlighting)
+Plug 'nvim-treesitter/nvim-treesitter', {'do': ':TSUpdate'}
+
+"Debugging and running tests.
+Plug 'puremourning/vimspector'
+Plug 'vim-test/vim-test'
 
 call plug#end()
