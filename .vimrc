@@ -13,6 +13,8 @@ set nu rnu
 " Allow hidden buffers (buffers that haven't been saved)
 set hidden
 
+set guicursor
+
 " filetype plugin indent on
 set softtabstop=4
 set shiftwidth=4
@@ -20,14 +22,12 @@ set expandtab
 set nowrap
 set colorcolumn=120
 set splitright
-" sets cwd to whatever file is in view.  Better omni-completion
-" set autochdir
 
 " Coc-nvim github settings
-set updatetime=250
+set updatetime=200
 set shortmess+=c
+set shortmess-=F
 set signcolumn=yes
-
 
 " Allow backspace to remove indent and move between lines
 set backspace=indent,eol,start
@@ -36,7 +36,8 @@ set showmatch
 
 "set the color scheme
 set background=dark
-colorscheme base16-gruvbox-dark-soft
+"colorscheme base16-gruvbox-dark-soft
+colorscheme base16-tomorrow-night
 set termguicolors
 
 " Set leader key to spacebar vim
@@ -60,6 +61,9 @@ map <leader>bb :buffers<CR>
 
 " Reload the current buffer from the file system
 map <leader>r :e<CR>
+
+" Open vimrc for editing
+map <leader>ev :e ~/.vimrc<CR>
 
 " <C-^> is to hop back to the last buffer.  Since it's also a mosh shortcut,
 " rebinding it to <C-b> which is also more ergonomic.
@@ -410,5 +414,5 @@ if filereadable(expand("~/.vim/plugged/vim-test/plugin/test.vim"))
     "let g:test#enabled_runners = ["java#braziltest"]
     let g:test#java#runner = "braziltest"
     "let test#java#maventest#executable = "brazil-build test"
-    let g:test#strategy = "neovim"
+    let g:test#strategy = "floaterm"
 endif
