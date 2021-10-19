@@ -131,118 +131,235 @@ endif
 
 "COC-NVIM CONFIGURATION
 "----------------------
-fun! InitCoc()
-  " Use <c-space> to trigger completion.
-  imap <silent><expr><C-space> coc#refresh()
-  " Use <cr> to confirm completion
-  "imap <expr> <cr> pumvisible() ? "\<C-y>" : "\<C-g>u\<CR>"
-  "imap <expr> <cr> complete_info()["selected"] != "-1" ? "\<C-y>" : "\<C-g>u\<CR>"
-  inoremap <silent><expr> <cr> pumvisible() ? coc#_select_confirm()
-                              \: "\<C-g>u\<CR>\<c-r>=coc#on_enter()\<CR>"
+"fun! InitCoc()
+  "" Use <c-space> to trigger completion.
+  "imap <silent><expr><C-space> coc#refresh()
+  "" Use <cr> to confirm completion
+  ""imap <expr> <cr> pumvisible() ? "\<C-y>" : "\<C-g>u\<CR>"
+  ""imap <expr> <cr> complete_info()["selected"] != "-1" ? "\<C-y>" : "\<C-g>u\<CR>"
+  ""inoremap <silent><expr> <cr> pumvisible() ? coc#_select_confirm()
+                              ""\: "\<C-g>u\<CR>\<c-r>=coc#on_enter()\<CR>"
 
-  " Remap keys for gotos
-  nmap <silent> gd <Plug>(coc-definition)
-  nmap <silent> <Leader>r <Plug>(coc-references)
-  " Use K to show documentation in preview window
-  nmap <silent> K :call <SID>show_documentation()<CR>
+  "" Remap keys for gotos
+  "nmap <silent> gd <Plug>(coc-definition)
+  "nmap <silent> <Leader>r <Plug>(coc-references)
+  "" Use K to show documentation in preview window
+  "nmap <silent> K :call <SID>show_documentation()<CR>
 
-  function! s:show_documentation()
-   if (index(['vim','help'], &filetype) >= 0)
-      execute 'h '.expand('<cword>')
-    else
-      call CocAction('doHover')
-    endif
-  endfunction
+  "function! s:show_documentation()
+   "if (index(['vim','help'], &filetype) >= 0)
+      "execute 'h '.expand('<cword>')
+    "else
+      "call CocAction('doHover')
+    "endif
+  "endfunction
 
-  " Renamp for rename current word
-  nmap <leader>rn <Plug>(coc-rename)
-  " Remap for do codeAction of current line
-  nmap <leader>ac  <Plug>(coc-codeaction)
-  " Fix autofix problem of current line
-  nmap <leader>qf  <Plug>(coc-fix-current)
+  "" Renamp for rename current word
+  "nmap <leader>rn <Plug>(coc-rename)
+  "" Remap for do codeAction of current line
+  "nmap <leader>ac  <Plug>(coc-codeaction)
+  "" Fix autofix problem of current line
+  "nmap <leader>qf  <Plug>(coc-fix-current)
 
-  " Format selected regions
-  xmap <leader>f  <Plug>(coc-format-selected)
-  nmap <leader>f  <Plug>(coc-format-selected)
-  autocmd CursorHold * silent call CocActionAsync('highlight')
-endfun
+  "" Format selected regions
+  "xmap <leader>f  <Plug>(coc-format-selected)
+  "nmap <leader>f  <Plug>(coc-format-selected)
+  "autocmd CursorHold * silent call CocActionAsync('highlight')
+"endfun
 
-fun! SetWorkspaceFolders() abort
-  " Only set g:WorkspaceFolders if it is not already set
-  "if exists("g:WorkspaceFolders") | return | endif
-  if executable("findup")
-      let l:ws_dir = trim(system("cd '" . expand("%:h") . "' && findup packageInfo"))
-      " Bemol conveniently generates a '$WS_DIR/.bemol/ws_root_folders' file, so let's leverage it
-      let l:folders_file = l:ws_dir . "/.bemol/ws_root_folders"
-      if filereadable(l:folders_file)
-          let l:ws_folders = readfile(l:folders_file)
-          let g:WorkspaceFolders = filter(l:ws_folders, "isdirectory(v:val)")
-      endif
-  endif
-endfun
+"fun! SetWorkspaceFolders() abort
+  "" Only set g:WorkspaceFolders if it is not already set
+  ""if exists("g:WorkspaceFolders") | return | endif
+  "if executable("findup")
+      "let l:ws_dir = trim(system("cd '" . expand("%:h") . "' && findup packageInfo"))
+      "" Bemol conveniently generates a '$WS_DIR/.bemol/ws_root_folders' file, so let's leverage it
+      "let l:folders_file = l:ws_dir . "/.bemol/ws_root_folders"
+      "if filereadable(l:folders_file)
+          "let l:ws_folders = readfile(l:folders_file)
+          "let g:WorkspaceFolders = filter(l:ws_folders, "isdirectory(v:val)")
+      "endif
+  "endif
+"endfun
 
-fun! InitVimGo()
-  " Renamp for rename current word
-  nmap <leader>rn <Plug>(go-rename)
-  " Automatically import things
-  nmap <leader>i <Plug>(go-imports)
-  " Describe selected syntax
-  "imap <leader>, <Plug>(go-info)
-  nmap <leader>, <Plug>(go-info)
-  nmap <leader>r <Plug>(go-referrers)
-  let g:go_imports_autosave = 1
-  let g:go_doc_popup_window = 1
-  inoremap <C-space> <C-x><C-o>
-  set noshowmode
-endfun
+
+lua << EOF
+jdtls_setup = function()
+    local root_dir = require('jdtls.setup').find_root({'packageInfo'}, 'Config')
+    local home = os.getenv('HOME')
+    local eclipse_workspace = home .. "/.local/share/eclipse/" .. vim.fn.fnamemodify(root_dir, ':p:h:t')
+
+    local ws_folders_lsp = {}
+    local ws_folders_jdtls = {}
+    if root_dir then
+        local file = io.open(root_dir .. "/.bemol/ws_root_folders", "r");
+        if file then
+            for line in file:lines() do
+                table.insert(ws_folders_lsp, line);
+                table.insert(ws_folders_jdtls, string.format("file://%s", line))
+            end
+            file:close()
+        end
+    end
+
+    local config = {
+        on_attach = on_attach,
+        cmd = {'java-lsp.sh', eclipse_workspace},
+        root_dir = root_dir,
+        init_options = {
+            workspaceFolders = ws_folders_jdtls,
+        },
+    }
+
+    require('jdtls').start_or_attach(config)
+
+    for _,line in ipairs(ws_folders_lsp) do
+        vim.lsp.buf.add_workspace_folder(line)
+    end
+end
+EOF
+
+lua << EOF
+metals_setup = function()
+  local root_dir = require('jdtls.setup').find_root({'packageInfo'}, 'Config')
+  local home = os.getenv('HOME')
+  local eclipse_workspace = home .. "/.local/share/eclipse/" .. vim.fn.fnamemodify(root_dir, ':p:h:t')
+
+  local ws_folders_lsp = {}
+  local ws_folders_metals = {}
+  if root_dir then
+      local file = io.open(root_dir .. "/.bemol/ws_root_folders", "r");
+      if file then
+          for line in file:lines() do
+              table.insert(ws_folders_lsp, line);
+              table.insert(ws_folders_metals, string.format("file://%s", line))
+          end
+          file:close()
+      end
+  end
+
+  metals_config = require'metals'.bare_config
+  metals_config.settings = {
+     showImplicitArguments = true,
+  }
+  metals_config.init_options = {
+    workspaceFolders = ws_folders_metals,
+  }
+
+  require('metals').initialize_or_attach(metals_config)
+  for _,line in ipairs(ws_folders_lsp) do
+      vim.lsp.buf.add_workspace_folder(line)
+  end
+end
+EOF
+
+augroup lsp
+    autocmd!
+    autocmd FileType java luado jdtls_setup()
+    autocmd FileType scala,sbt luado metals_setup()
+augroup end
+
+"fun! InitVimGo()
+  "" Renamp for rename current word
+  "nmap <leader>rn <Plug>(go-rename)
+  "" Automatically import things
+  "nmap <leader>i <Plug>(go-imports)
+  "" Describe selected syntax
+  ""imap <leader>, <Plug>(go-info)
+  "nmap <leader>, <Plug>(go-info)
+  "nmap <leader>r <Plug>(go-referrers)
+  "let g:go_imports_autosave = 1
+  "let g:go_doc_popup_window = 1
+  "inoremap <C-space> <C-x><C-o>
+  "set noshowmode
+"endfun
 
 " Choose completion engine
-augroup LSP
-  autocmd!
-  autocmd FileType go :call InitVimGo()
-  autocmd FileType java,javascript,javascriptreact,python,typescript,typescriptreact,scala :call InitCoc()
-augroup END
+"augroup LSP
+  "autocmd!
+  "autocmd FileType go :call InitVimGo()
+  "autocmd FileType java,javascript,javascriptreact,python,typescript,typescriptreact,scala :call InitCoc()
+  "autocmd FileType java,python,scala :call InitCoc()
+"augroup END
 
 
-augroup CocWS
-  autocmd!
-  autocmd FileType java :call SetWorkspaceFolders()
-augroup END
+"augroup CocWS
+  "autocmd!
+  "autocmd FileType java :call SetWorkspaceFolders() :call SetWorkspaceFoldersLua()
+"augroup END
+
 "NEOVIM LSP CLIENT CONFIG
 "------------------------
-"if filereadable(expand("~/.vim/plugged/nvim-lspconfig/plugin/lspconfig.vim"))
-  "let g:completion_matching_strategy_list = ['exact', 'substring', 'fuzzy']
+if filereadable(expand("~/.vim/plugged/nvim-lspconfig/plugin/lspconfig.vim"))
+  let g:completion_matching_strategy_list = ['exact', 'substring', 'fuzzy']
   "let g:completion_enable_auto_popup = 0
-  "lua vim.lsp.set_log_level("debug")
-  "let JAVA_TOOL_OPTIONS="-javaagent:/home/adamkoz/dev/lombok-1.18.12.jar -Xbootclasspath/p:/home/adamkoz/dev/lombok-1.18.12.jar"
-  ""lua require'lspconfig'.tsserver.setup{ on_attach=require'completion'.on_attach }
-  ""Go LSP also has a bug...
-  ""lua require'lspconfig'.gopls.setup{ on_attach=require'completion'.on_attach }
-  ""Java LSP has a bug - not currently working.
-  "lua require'lspconfig'.jdtls.setup {} 
-  "lua << EOF
-  "require'lspconfig'.jdtls.setup { 
-      "on_attach=require'completion'.on_attach,
-      "init_options = {
-        "jvm_args = "-javaagent:/home/adamkoz/dev/lombok.jar -Xbootclasspath/a:/home/adamkoz/dev/lombok.jar"
-      "}
-  "}
-"EOF
+  lua vim.lsp.set_log_level("info")
+lua <<EOF
+  lspconfig = require "lspconfig"
+  lspconfig.gopls.setup {
+    on_attach=require'completion'.on_attach,
+    cmd = {"gopls", "serve"},
+    settings = {
+      gopls = {
+        analyses = {
+          unusedparams = true,
+        },
+        staticcheck = true,
+      },
+    },
+  }
+EOF
 
-  ""inoremap <C-v> <Plug>(completion-trigger)
-  ""inoremap <C-@> <C-Space>
+  lua require'lspconfig'.tsserver.setup{ on_attach=require'completion'.on_attach }
+
   "imap <silent> <C-Space> <Plug>(completion_trigger)
   "imap <tab> <Plug>(completion_smart_tab)
-  "nmap <silent> gd :lua vim.lsp.buf.definition()<CR>
-  "nmap gi :lua vim.lsp.buf.implementation()<CR>
-  "nmap <leader>k :lua vim.lsp.buf.signature_help()<CR>
-  "nmap <silent> <leader>r :lua vim.lsp.buf.references()<CR>
-  "nmap <leader>rn :lua vim.lsp.buf.rename()<CR>
-  "nmap <leader>h :lua vim.lsp.buf.hover()<CR>
-  "nmap <leader>ac :lua vim.lsp.buf.code_action()<CR>
-  "nmap <leader>sd :lua vim.lsp.util.show_line_diagnostics(); vim.lsp.util.show_line_diagnostics()<CR>
-  "set completeopt=menuone,noinsert,noselect
-"endif
+  nmap <silent> gd :lua vim.lsp.buf.definition()<CR>
+  nmap gi :lua vim.lsp.buf.implementation()<CR>
+  nmap <leader>k :lua vim.lsp.buf.signature_help()<CR>
+  nmap <silent> <leader>r :lua vim.lsp.buf.references()<CR>
+  nmap <leader>rn :lua vim.lsp.buf.rename()<CR>
+  nmap <leader>h :lua vim.lsp.buf.document_highlight()<CR>
+  nmap <leader>ac :lua vim.lsp.buf.code_action()<CR>
+  nmap <leader>sd :lua vim.lsp.diagnostic.show_line_diagnostics()<CR>
+  nmap <leader>wl :lua print(vim.inspect(vim.lsp.buf.list_workspace_folders()))<CR>
+  set completeopt=menuone,noinsert,noselect
+
+endif
+
+if filereadable(expand("~/.vim/plugged/nvim-compe/plugin/compe.vim"))
+  let g:compe = {}
+  let g:compe.enabled = v:true
+  let g:compe.autocomplete = v:true
+  let g:compe.debug = v:false
+  let g:compe.min_length = 1
+  let g:compe.preselect = 'enable'
+  let g:compe.throttle_time = 80
+  let g:compe.source_timeout = 200
+  let g:compe.resolve_timeout = 800
+  let g:compe.incomplete_delay = 400
+  let g:compe.max_abbr_width = 100
+  let g:compe.max_kind_width = 100
+  let g:compe.max_menu_width = 100
+  let g:compe.documentation = v:true
+
+  let g:compe.source = {}
+  let g:compe.source.path = v:true
+  let g:compe.source.buffer = v:true
+  let g:compe.source.calc = v:true
+  let g:compe.source.nvim_lsp = v:true
+  let g:compe.source.nvim_lua = v:true
+
+  inoremap <silent><expr> <C-Space> compe#complete()
+  inoremap <silent><expr> <CR>      compe#confirm('<CR>')
+  inoremap <silent><expr> <C-e>     compe#close('<C-e>')
+  inoremap <silent><expr> <C-f>     compe#scroll({ 'delta': +4 })
+  inoremap <silent><expr> <C-d>     compe#scroll({ 'delta': -4 })
+endif
+
+if filereadable(expand("~/.vim/plugged/nvim-jdtls/plugin/nvim_jdtls.vim"))
+  nnoremap <leader>ac <Cmd>lua require('jdtls').code_action()<CR>
+  vnoremap <leader>ac <Esc><Cmd>lua require('jdtls').code_action(true)<CR>
+endif
 
 "TELESCOPE CONFIG
 "----------------
