@@ -94,7 +94,7 @@ let NERDTreeShowHidden=1
 "GIT-FUGITIVE
 "------------
 "map leader-g to open git status window
-map <leader>g :Gstatus<CR>
+map <leader>g :Git<CR>
 
 "ALE CONFIG
 "----------
@@ -330,34 +330,83 @@ EOF
 
 endif
 
-if filereadable(expand("~/.vim/plugged/nvim-compe/plugin/compe.vim"))
-  let g:compe = {}
-  let g:compe.enabled = v:true
-  let g:compe.autocomplete = v:true
-  let g:compe.debug = v:false
-  let g:compe.min_length = 1
-  let g:compe.preselect = 'enable'
-  let g:compe.throttle_time = 80
-  let g:compe.source_timeout = 200
-  let g:compe.resolve_timeout = 800
-  let g:compe.incomplete_delay = 400
-  let g:compe.max_abbr_width = 100
-  let g:compe.max_kind_width = 100
-  let g:compe.max_menu_width = 100
-  let g:compe.documentation = v:true
+if filereadable(expand("~/.vim/plugged/nvim-cmp/plugin/cmp.lua"))
+  "let g:compe = {}
+  "let g:compe.enabled = v:true
+  "let g:compe.autocomplete = v:true
+  "let g:compe.debug = v:false
+  "let g:compe.min_length = 1
+  "let g:compe.preselect = 'enable'
+  "let g:compe.throttle_time = 80
+  "let g:compe.source_timeout = 200
+  "let g:compe.resolve_timeout = 800
+  "let g:compe.incomplete_delay = 400
+  "let g:compe.max_abbr_width = 100
+  "let g:compe.max_kind_width = 100
+  "let g:compe.max_menu_width = 100
+  "let g:compe.documentation = v:true
 
-  let g:compe.source = {}
-  let g:compe.source.path = v:true
-  let g:compe.source.buffer = v:true
-  let g:compe.source.calc = v:true
-  let g:compe.source.nvim_lsp = v:true
-  let g:compe.source.nvim_lua = v:true
+  "let g:compe.source = {}
+  "let g:compe.source.path = v:true
+  "let g:compe.source.buffer = v:true
+  "let g:compe.source.calc = v:true
+  "let g:compe.source.nvim_lsp = v:true
+  "let g:compe.source.nvim_lua = v:true
 
-  inoremap <silent><expr> <C-Space> compe#complete()
-  inoremap <silent><expr> <CR>      compe#confirm('<CR>')
-  inoremap <silent><expr> <C-e>     compe#close('<C-e>')
-  inoremap <silent><expr> <C-f>     compe#scroll({ 'delta': +4 })
-  inoremap <silent><expr> <C-d>     compe#scroll({ 'delta': -4 })
+  "inoremap <silent><expr> <C-Space> cmp#complete()
+  "inoremap <silent><expr> <CR>      cmp#confirm('<CR>')
+  "inoremap <silent><expr> <C-e>     cmp#close('<C-e>')
+  "inoremap <silent><expr> <C-f>     cmp#scroll({ 'delta': +4 })
+  "inoremap <silent><expr> <C-d>     cmp#scroll({ 'delta': -4 })
+  lua << EOF
+  local cmp = require'cmp'
+  cmp.setup({
+    mapping = {
+      ['<C-d>'] = cmp.mapping(cmp.mapping.scroll_docs(-4), { 'i', 'c' }),
+      ['<C-f>'] = cmp.mapping(cmp.mapping.scroll_docs(4), { 'i', 'c' }),
+      ['<C-Space>'] = cmp.mapping(cmp.mapping.complete(), { 'i', 'c' }),
+      ['<C-y>'] = cmp.config.disable, -- Specify `cmp.config.disable` if you want to remove the default `<C-y>` mapping.
+      ['<C-e>'] = cmp.mapping({
+        i = cmp.mapping.abort(),
+        c = cmp.mapping.close(),
+      }),
+      ['<CR>'] = cmp.mapping.confirm({ select = true }),
+    },
+    sources = cmp.config.sources({
+      { name = 'nvim_lsp' },
+      -- { name = 'vsnip' }, -- For vsnip users.
+      -- { name = 'luasnip' }, -- For luasnip users.
+      -- { name = 'ultisnips' }, -- For ultisnips users.
+      -- { name = 'snippy' }, -- For snippy users.
+    }, {
+      { name = 'buffer' },
+    })
+  })
+
+  -- Use buffer source for `/` (if you enabled `native_menu`, this won't work anymore).
+  cmp.setup.cmdline('/', {
+    sources = {
+      { name = 'buffer' }
+    }
+  })
+
+  -- Use cmdline & path source for ':' (if you enabled `native_menu`, this won't work anymore).
+  cmp.setup.cmdline(':', {
+    sources = cmp.config.sources({
+      { name = 'path' }
+    }, {
+      { name = 'cmdline' }
+    })
+  })
+
+  -- Setup lspconfig.
+  -- local capabilities = require('cmp_nvim_lsp').update_capabilities(vim.lsp.protocol.make_client_capabilities())
+  -- Replace <YOUR_LSP_SERVER> with each lsp server you've enabled.
+   -- require('lspconfig')['jdtls'].setup {
+         -- capabilities = capabilities
+         -- }
+EOF
+
 endif
 
 if filereadable(expand("~/.vim/plugged/nvim-jdtls/plugin/nvim_jdtls.vim"))
@@ -381,6 +430,7 @@ if filereadable(expand("~/.vim/plugged/telescope.nvim/plugin/telescope.vim"))
           ["<esc>"] = actions.close
         },
       },
+      path_display = {"shorten"},
       file_ignore_patterns = {"build/*", "env/*", "release-info/*"}
     }
   }
@@ -407,6 +457,18 @@ if filereadable(expand("~/.vim/plugged/vimspector/plugin/vimspector.vim"))
   nnoremap <leader>u :call vimspector#StepOut()<cr>
   nnoremap <leader>q :VimspectorReset<cr>
   nnoremap <leader>tb :call vimspector#ToggleBreakpoint()<cr>
+endif
+
+if filereadable(expand("~/.vim/plugged/vim-test/plugin/test.vim"))
+    let g:test#custom_runners = {'Java': ["braziltest"]}
+    "let g:test#enabled_runners = ["java#braziltest"]
+    let g:test#java#runner = "braziltest"
+    "let test#java#maventest#executable = "brazil-build test"
+    let g:test#strategy = "floaterm"
+endif
+
+if filereadable(expand("~/.vim/plugged/feline.nvim/USAGE.md"))
+    lua require('feline').setup()
 endif
 
 if filereadable(expand("~/.vim/plugged/vim-test/plugin/test.vim"))
