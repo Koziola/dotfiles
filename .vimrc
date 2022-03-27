@@ -36,8 +36,8 @@ set showmatch
 
 "set the color scheme
 set background=dark
-"colorscheme base16-gruvbox-dark-soft
-colorscheme base16-tomorrow-night
+colorscheme gruvbox
+"colorscheme base16-tomorrow-night
 set termguicolors
 
 " Set leader key to spacebar vim
@@ -76,9 +76,12 @@ nnoremap <C-k> gT
 "Swap file location
 set directory^=$HOME/.vim/swap//
 
+"=======================================
 "PLUGIN CONFIGURATION
-"--------------------
+"=======================================
 
+"NERDTREE
+"--------
 " Keymap to open NERDTree
 map <leader>ft :NERDTreeToggle<CR>
 " Keymap to open NERDTree with the current file automatically selected.
@@ -129,21 +132,6 @@ if isdirectory(expand("~/.vim/plugged/vim-airline"))
   let g:airline_skip_empty_sections = 1
 endif
 
-"fun! InitVimGo()
-  "" Renamp for rename current word
-  "nmap <leader>rn <Plug>(go-rename)
-  "" Automatically import things
-  "nmap <leader>i <Plug>(go-imports)
-  "" Describe selected syntax
-  ""imap <leader>, <Plug>(go-info)
-  "nmap <leader>, <Plug>(go-info)
-  "nmap <leader>r <Plug>(go-referrers)
-  "let g:go_imports_autosave = 1
-  "let g:go_doc_popup_window = 1
-  "inoremap <C-space> <C-x><C-o>
-  "set noshowmode
-"endfun
-
 "NEOVIM LSP CLIENT CONFIG
 "------------------------
 if isdirectory(expand('~/.vim/plugged/nvim-lspconfig'))
@@ -154,6 +142,7 @@ lua <<EOF
   lspconfig = require 'lspconfig'
   completion = require 'cmp_nvim_lsp'
   lsp_status = require 'lsp-status'
+  null_ls = require 'null-ls'
   require('trouble').setup()
 
   local completion_capabilities = completion.update_capabilities(vim.lsp.protocol.make_client_capabilities())
@@ -180,21 +169,43 @@ lua <<EOF
       },
     },
   }
-
   lspconfig.tsserver.setup {
-    on_attach=custom_on_attach,
+    cmd_env = { NODE_OPTIONS = "--max-old-space-size=8192" }, -- Give 8gb of RAM to node
+    filetypes = { "typescript", "typescriptreact", "typescript.tsx"},
+    init_options = {
+      maxTsServerMemory = "8192", -- 8gb of RAM to the lsp server
+    },
+    on_attach=function(client, bufnr)
+      client.resolved_capabilities.document_formatting = false
+      client.resolved_capabilities.document_range_formatting = false
+      -- on_attach(client, bufnr)
+      custom_on_attach(client, bufnr)
+    end,
     capabilities=custom_capabilities
+  }
+  -- lspconfig.tsserver.setup{coq.lsp_ensure_capabilities()}
+
+  null_ls.setup{
+      sources = {
+          null_ls.builtins.diagnostics.eslint_d,
+          null_ls.builtins.code_actions.eslint_d,
+          null_ls.builtins.formatting.prettier
+      },
+      on_attach=on_attach
   }
 EOF
 
+  "imap <silent> <C-Space> <Plug>(completion_trigger)
+  "imap <tab> <Plug>(completion_smart_tab)
   nmap <silent> gd :lua vim.lsp.buf.definition()<CR>
   nmap gi :lua vim.lsp.buf.implementation()<CR>
   nmap <leader>k :lua vim.lsp.buf.signature_help()<CR>
+  nmap <leader>h :lua vim.lsp.buf.hover()<CR>
   nmap <silent> <leader>r :lua vim.lsp.buf.references()<CR>
   nmap <leader>rn :lua vim.lsp.buf.rename()<CR>
   nmap <leader>h :lua vim.lsp.buf.hover()<CR>
   nmap <leader>ac :lua vim.lsp.buf.code_action()<CR>
-  nmap <leader>sd :lua vim.lsp.diagnostic.show_line_diagnostics()<CR>
+  nmap <leader>sd :lua vim.diagnostic.open_float()<CR>
   nmap <leader>wl :lua print(vim.inspect(vim.lsp.buf.list_workspace_folders()))<CR>
   set completeopt=menuone,noinsert,noselect
 
@@ -203,19 +214,19 @@ EOF
 
 endif
 
-if isdirectory(expand("~/.vim/plugged/null-ls.nvim"))
-  lua << EOF
-  local null_ls = require('null-ls')
-  null_ls.setup({
-    sources = {
-      null_ls.builtins.formatting.prettier,
-      null_ls.builtins.diagnostics.eslint,
-      null_ls.builtins.code_actions.eslint,
-      null_ls.builtins.completion.spell,
-    },
-  })
-EOF
-end
+"if isdirectory(expand("~/.vim/plugged/null-ls.nvim"))
+  "lua << EOF
+  "local null_ls = require('null-ls')
+  "null_ls.setup({
+    "sources = {
+      "null_ls.builtins.formatting.prettier,
+      "null_ls.builtins.diagnostics.eslint,
+      "null_ls.builtins.code_actions.eslint,
+      "null_ls.builtins.completion.spell,
+    "},
+  "})
+"EOF
+"end
 
 if isdirectory(expand("~/.vim/plugged/nvim-cmp"))
   lua << EOF
@@ -304,7 +315,8 @@ if isdirectory(expand("~/.vim/plugged/nvim-treesitter"))
         -- Modules and its options go here
         highlight = { enable = true },
         incremental_selection = { enable = true },
-        textobjects = { enable = true },
+        -- textobjects = { enable = true },
+        indent = { enable = true },
         }
 EOF
 endif
@@ -383,5 +395,54 @@ EOF
 endif
 
 if isdirectory(expand("~/.vim/plugged/vim-test"))
-    let g:test#strategy = "floaterm"
+  let g:test#strategy = "neovim"
+endif
+
+if filereadable(expand("~/.vim/plugged/vim-test/plugin/test.vim"))
+  nmap <silent> <leader>T :TestNearest<CR>
+  nmap <silent> <leader>t :TestFile<CR>
+  nmap <silent> <leader>l :TestLast<CR>
+
+  " don't clear the screen and lose test run results
+  let g:test#preserve_screen = 1
+
+  let test#custom_runners = { 'ruby': ['payserver'], 'javascript': ['payserver'] }
+  let test#enabled_runners = ['ruby#payserver', 'javascript#payserver']
+endif
+
+if filereadable(expand("~/.vim/plugged/fzf.vim/README.md"))
+  nnoremap <C-p> :GFiles<CR>
+endif
+
+if filereadable(expand("~/.vim/plugged/nvim-lspconfig-stripe/README.md"))
+  lua << EOF
+  lspconfig = require ("lspconfig")
+  require("lspconfig_stripe")
+  -- local coq = require "coq"
+  lspconfig.payserver_sorbet.setup({})
+  -- lspconfig.payserver_sorbet.setup(coq.lsp_ensure_capabilities({}))
+EOF
+endif
+
+if filereadable(expand("~/.vim/plugged/ack.vim/README.md"))
+  let g:ackprg = 'rg --vimgrep --smart-case'
+  nnoremap <leader>rg :Ack!<Space>
+  " Any empty ack search will search for the work the cursor is on
+  let g:ack_use_cword_for_empty_search = 1
+  " Don't jump to first match
+  cnoreabbrev Ack Ack!
+endif
+
+if filereadable(expand("~/.vim/plugged/indent-blankline.nvim/README.md"))
+  lua << EOF
+  require("indent_blankline").setup {
+    char = "",
+    -- context_char = "║",
+    context_char = "|",
+    show_current_context = true,
+    space_char_blankline = " ",
+    use_treesitter = true,
+  }
+EOF
+  highlight IndentBlanklineContextChar guifg=#656565 gui=nocombine
 endif

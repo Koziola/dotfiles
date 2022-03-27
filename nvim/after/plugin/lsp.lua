@@ -4,7 +4,6 @@ vim.lsp.set_log_level('info')
 lspconfig = require 'lspconfig'
 completion = require 'cmp_nvim_lsp'
 lsp_status = require 'lsp-status'
-luadev = require 'lua-dev'
 require('trouble').setup()
 
 local completion_capabilities = completion.update_capabilities(vim.lsp.protocol.make_client_capabilities())

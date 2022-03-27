@@ -1,6 +1,7 @@
 local map = require('keymap')
 local nmap = map.nmap
-nmap('<C-p>', ':Telescope find_files<CR>')
+-- This is slow af for big repositories.  Using fzf-lua instead.
+--nmap('<C-p>', ':Telescope find_files<CR>')
 nmap('<leader>rg', ':Telescope live_grep<CR>')
 nmap('<leader>bb', ':Telescope buffers<CR>')
 

@@ -5,6 +5,8 @@ if fn.empty(fn.glob(install_path)) > 0 then
   vim.cmd [[packadd packer.nvim]]
 end
 
+local stripe = require('stripe-packages')
+
 return require('packer').startup(function(use)
   -- My plugins here
   -- use 'foo1/bar1.nvim'
@@ -61,6 +63,8 @@ return require('packer').startup(function(use)
   use 'nvim-lua/popup.nvim'
   use 'nvim-lua/plenary.nvim'
   use 'nvim-telescope/telescope.nvim'
+
+  use { 'ibhagwan/fzf-lua', requires = { 'kyazdani42/nvim-web-devicons' }}
   
   --Treesitter (syntax highlighting)
   use 'nvim-treesitter/nvim-treesitter'
@@ -72,6 +76,8 @@ return require('packer').startup(function(use)
   -- Ricing the status bar 
   use 'famiu/feline.nvim'
   use 'kyazdani42/nvim-web-devicons'
+
+  stripe.use_packages(use)
 
   -- Automatically set up your configuration after cloning packer.nvim
   -- Put this at the end after all plugins

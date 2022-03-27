@@ -13,10 +13,12 @@ Plug 'tpope/vim-fugitive'
 Plug 'tpope/vim-surround'
 " Detect current file's indentation settings
 Plug 'tpope/vim-sleuth'
+Plug 'lukas-reineke/indent-blankline.nvim'
 
 "Gruvbox editor theme
 Plug 'morhetz/gruvbox'
 Plug 'chriskempson/base16-vim'
+
 
 "" On-demand loading for NerdTree
 Plug 'scrooloose/nerdtree', { 'on':  'NERDTreeToggle' }
@@ -31,9 +33,6 @@ Plug 'jlanzarotta/bufexplorer'
 
 " Kill buffers without losing splits
 Plug 'qpkorr/vim-bufkill'
-
-" post install (yarn install | npm install) then load plugin only for editing supported files
-Plug 'prettier/vim-prettier', { 'do': 'yarn install' }
 
 " coc-nvim - turns this bitch into an IDE
 "Plug 'neoclide/coc.nvim', {'branch': 'release'}
@@ -64,6 +63,11 @@ Plug 'nvim-lua/popup.nvim'
 Plug 'nvim-lua/plenary.nvim'
 Plug 'nvim-telescope/telescope.nvim'
 
+Plug 'junegunn/fzf'
+Plug 'junegunn/fzf.vim'
+
+Plug 'mileszs/ack.vim'
+
 "Treesitter (syntax highlighting)
 Plug 'nvim-treesitter/nvim-treesitter', {'do': ':TSUpdate'}
 
@@ -74,5 +78,10 @@ Plug 'vim-test/vim-test'
 "Ricing the status bar 
 Plug 'famiu/feline.nvim'
 Plug 'kyazdani42/nvim-web-devicons'
+
+Plug 'ssh://git.corp.stripe.com/nms/nvim-lspconfig-stripe'
+Plug 'ssh://git.corp.stripe.com/dbalatero/vim-test-stripe'
+
+Plug 'vim-ruby/vim-ruby'
 
 call plug#end()
