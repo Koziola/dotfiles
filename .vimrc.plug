@@ -68,6 +68,4 @@ Plug 'vim-test/vim-test'
 "Ricing the status bar 
 Plug 'famiu/feline.nvim'
 
-Plug 'ssh://git.amazon.com:2222/pkg/Vim-code-browse', {'branch': 'mainline'}
-
 call plug#end()

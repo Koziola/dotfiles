@@ -110,7 +110,6 @@ let g:ale_sign_style_warning = 'W'
 let g:prettier#autoformat_require_pragma = 0
 let g:prettier#exec_cmd_async = 1
 let g:prettier#quickfix_enabled = 0
-"autocmd BufWritePre *.js,*.jsx,*.mjs,*.ts,*.tsx,*.css,*.less,*.scss,*.json,*.graphql,*.md,*.vue,*.yaml,*.html Prettier
 
 "FLOATING TERMINAL WINDOW CONFIG
 "-------------------------------
@@ -460,10 +459,6 @@ if filereadable(expand("~/.vim/plugged/vimspector/plugin/vimspector.vim"))
 endif
 
 if filereadable(expand("~/.vim/plugged/vim-test/plugin/test.vim"))
-    let g:test#custom_runners = {'Java': ["braziltest"]}
-    "let g:test#enabled_runners = ["java#braziltest"]
-    let g:test#java#runner = "braziltest"
-    "let test#java#maventest#executable = "brazil-build test"
     let g:test#strategy = "floaterm"
 endif
 
@@ -472,9 +467,5 @@ if filereadable(expand("~/.vim/plugged/feline.nvim/USAGE.md"))
 endif
 
 if filereadable(expand("~/.vim/plugged/vim-test/plugin/test.vim"))
-    let g:test#custom_runners = {'Java': ["braziltest"]}
-    "let g:test#enabled_runners = ["java#braziltest"]
-    let g:test#java#runner = "braziltest"
-    "let test#java#maventest#executable = "brazil-build test"
     let g:test#strategy = "floaterm"
 endif
