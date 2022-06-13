@@ -84,13 +84,6 @@ map <leader>t :NERDTreeFocus<CR>
 let NERDTREEIGNORE = ['/*.git*', '.DS_STORE']
 let NERDTreeShowHidden=1
 
-"FZF-VIM
-"-------
-" fzf file fuzzy search that respects .gitignore
-" If in git directory, show only files that are committed, staged, or unstaged
-" else use regular :Files
-"nnoremap <expr> <C-p> (len(system('git rev-parse')) ? ':Files' : ':GFiles --exclude-standard --others --cached')."\<cr>"
-
 "GIT-FUGITIVE
 "------------
 "map leader-g to open git status window
@@ -132,135 +125,6 @@ if filereadable(expand("~/.vim/plugged/vim-airline/plugin/airline.vim"))
   let g:airline_skip_empty_sections = 1
 endif
 
-"COC-NVIM CONFIGURATION
-"----------------------
-"fun! InitCoc()
-  "" Use <c-space> to trigger completion.
-  "imap <silent><expr><C-space> coc#refresh()
-  "" Use <cr> to confirm completion
-  ""imap <expr> <cr> pumvisible() ? "\<C-y>" : "\<C-g>u\<CR>"
-  ""imap <expr> <cr> complete_info()["selected"] != "-1" ? "\<C-y>" : "\<C-g>u\<CR>"
-  ""inoremap <silent><expr> <cr> pumvisible() ? coc#_select_confirm()
-                              ""\: "\<C-g>u\<CR>\<c-r>=coc#on_enter()\<CR>"
-
-  "" Remap keys for gotos
-  "nmap <silent> gd <Plug>(coc-definition)
-  "nmap <silent> <Leader>r <Plug>(coc-references)
-  "" Use K to show documentation in preview window
-  "nmap <silent> K :call <SID>show_documentation()<CR>
-
-  "function! s:show_documentation()
-   "if (index(['vim','help'], &filetype) >= 0)
-      "execute 'h '.expand('<cword>')
-    "else
-      "call CocAction('doHover')
-    "endif
-  "endfunction
-
-  "" Renamp for rename current word
-  "nmap <leader>rn <Plug>(coc-rename)
-  "" Remap for do codeAction of current line
-  "nmap <leader>ac  <Plug>(coc-codeaction)
-  "" Fix autofix problem of current line
-  "nmap <leader>qf  <Plug>(coc-fix-current)
-
-  "" Format selected regions
-  "xmap <leader>f  <Plug>(coc-format-selected)
-  "nmap <leader>f  <Plug>(coc-format-selected)
-  "autocmd CursorHold * silent call CocActionAsync('highlight')
-"endfun
-
-"fun! SetWorkspaceFolders() abort
-  "" Only set g:WorkspaceFolders if it is not already set
-  ""if exists("g:WorkspaceFolders") | return | endif
-  "if executable("findup")
-      "let l:ws_dir = trim(system("cd '" . expand("%:h") . "' && findup packageInfo"))
-      "" Bemol conveniently generates a '$WS_DIR/.bemol/ws_root_folders' file, so let's leverage it
-      "let l:folders_file = l:ws_dir . "/.bemol/ws_root_folders"
-      "if filereadable(l:folders_file)
-          "let l:ws_folders = readfile(l:folders_file)
-          "let g:WorkspaceFolders = filter(l:ws_folders, "isdirectory(v:val)")
-      "endif
-  "endif
-"endfun
-
-
-lua << EOF
-jdtls_setup = function()
-    local root_dir = require('jdtls.setup').find_root({'packageInfo'}, 'Config')
-    local home = os.getenv('HOME')
-    local eclipse_workspace = home .. "/.local/share/eclipse/" .. vim.fn.fnamemodify(root_dir, ':p:h:t')
-
-    local ws_folders_lsp = {}
-    local ws_folders_jdtls = {}
-    if root_dir then
-        local file = io.open(root_dir .. "/.bemol/ws_root_folders", "r");
-        if file then
-            for line in file:lines() do
-                table.insert(ws_folders_lsp, line);
-                table.insert(ws_folders_jdtls, string.format("file://%s", line))
-            end
-            file:close()
-        end
-    end
-
-    local config = {
-        on_attach = on_attach,
-        cmd = {'java-lsp.sh', eclipse_workspace},
-        root_dir = root_dir,
-        init_options = {
-            workspaceFolders = ws_folders_jdtls,
-        },
-    }
-
-    require('jdtls').start_or_attach(config)
-
-    for _,line in ipairs(ws_folders_lsp) do
-        vim.lsp.buf.add_workspace_folder(line)
-    end
-end
-EOF
-
-lua << EOF
-metals_setup = function()
-  local root_dir = require('jdtls.setup').find_root({'packageInfo'}, 'Config')
-  local home = os.getenv('HOME')
-  local eclipse_workspace = home .. "/.local/share/eclipse/" .. vim.fn.fnamemodify(root_dir, ':p:h:t')
-
-  local ws_folders_lsp = {}
-  local ws_folders_metals = {}
-  if root_dir then
-      local file = io.open(root_dir .. "/.bemol/ws_root_folders", "r");
-      if file then
-          for line in file:lines() do
-              table.insert(ws_folders_lsp, line);
-              table.insert(ws_folders_metals, string.format("file://%s", line))
-          end
-          file:close()
-      end
-  end
-
-  metals_config = require'metals'.bare_config
-  metals_config.settings = {
-     showImplicitArguments = true,
-  }
-  metals_config.init_options = {
-    workspaceFolders = ws_folders_metals,
-  }
-
-  require('metals').initialize_or_attach(metals_config)
-  for _,line in ipairs(ws_folders_lsp) do
-      vim.lsp.buf.add_workspace_folder(line)
-  end
-end
-EOF
-
-augroup lsp
-    autocmd!
-    autocmd FileType java luado jdtls_setup()
-    autocmd FileType scala,sbt luado metals_setup()
-augroup end
-
 "fun! InitVimGo()
   "" Renamp for rename current word
   "nmap <leader>rn <Plug>(go-rename)
@@ -280,15 +144,8 @@ augroup end
 "augroup LSP
   "autocmd!
   "autocmd FileType go :call InitVimGo()
-  "autocmd FileType java,javascript,javascriptreact,python,typescript,typescriptreact,scala :call InitCoc()
-  "autocmd FileType java,python,scala :call InitCoc()
 "augroup END
 
-
-"augroup CocWS
-  "autocmd!
-  "autocmd FileType java :call SetWorkspaceFolders() :call SetWorkspaceFoldersLua()
-"augroup END
 
 "NEOVIM LSP CLIENT CONFIG
 "------------------------
@@ -330,33 +187,6 @@ EOF
 endif
 
 if filereadable(expand("~/.vim/plugged/nvim-cmp/plugin/cmp.lua"))
-  "let g:compe = {}
-  "let g:compe.enabled = v:true
-  "let g:compe.autocomplete = v:true
-  "let g:compe.debug = v:false
-  "let g:compe.min_length = 1
-  "let g:compe.preselect = 'enable'
-  "let g:compe.throttle_time = 80
-  "let g:compe.source_timeout = 200
-  "let g:compe.resolve_timeout = 800
-  "let g:compe.incomplete_delay = 400
-  "let g:compe.max_abbr_width = 100
-  "let g:compe.max_kind_width = 100
-  "let g:compe.max_menu_width = 100
-  "let g:compe.documentation = v:true
-
-  "let g:compe.source = {}
-  "let g:compe.source.path = v:true
-  "let g:compe.source.buffer = v:true
-  "let g:compe.source.calc = v:true
-  "let g:compe.source.nvim_lsp = v:true
-  "let g:compe.source.nvim_lua = v:true
-
-  "inoremap <silent><expr> <C-Space> cmp#complete()
-  "inoremap <silent><expr> <CR>      cmp#confirm('<CR>')
-  "inoremap <silent><expr> <C-e>     cmp#close('<C-e>')
-  "inoremap <silent><expr> <C-f>     cmp#scroll({ 'delta': +4 })
-  "inoremap <silent><expr> <C-d>     cmp#scroll({ 'delta': -4 })
   lua << EOF
   local cmp = require'cmp'
   cmp.setup({
