@@ -106,7 +106,7 @@ let g:prettier#quickfix_enabled = 0
 
 "FLOATING TERMINAL WINDOW CONFIG
 "-------------------------------
-if filereadable(expand("~/.vim/plugged/vim-floaterm/plugin/floaterm.vim"))
+if isdirectory(expand("~/.vim/plugged/vim-floaterm"))
    nmap <leader>tt :FloatermNew! fish<CR>
    nmap <leader>th :FloatermToggle<CR>
    nmap <leader>tp :FloatermPrev<CR>
@@ -117,7 +117,7 @@ if filereadable(expand("~/.vim/plugged/vim-floaterm/plugin/floaterm.vim"))
 endif
 
 "AIRLINE CONFIG
-if filereadable(expand("~/.vim/plugged/vim-airline/plugin/airline.vim"))
+if isdirectory(expand("~/.vim/plugged/vim-airline"))
   let g:airline_theme = "bubblegum"
   let g:airline_section_y = ""
   let g:airline_section_warning = ""
@@ -149,7 +149,7 @@ endif
 
 "NEOVIM LSP CLIENT CONFIG
 "------------------------
-if filereadable(expand("~/.vim/plugged/nvim-lspconfig/plugin/lspconfig.vim"))
+if isdirectory(expand("~/.vim/plugged/nvim-lspconfig"))
   let g:completion_matching_strategy_list = ['exact', 'substring', 'fuzzy']
   "let g:completion_enable_auto_popup = 0
   lua vim.lsp.set_log_level("info")
@@ -199,7 +199,7 @@ EOF
 
 endif
 
-if filereadable(expand("~/.vim/plugged/nvim-cmp/plugin/cmp.lua"))
+if isdirectory(expand("~/.vim/plugged/nvim-cmp"))
   lua << EOF
   local cmp = require'cmp'
   cmp.setup({
@@ -251,14 +251,14 @@ EOF
 
 endif
 
-if filereadable(expand("~/.vim/plugged/nvim-jdtls/plugin/nvim_jdtls.vim"))
+if isdirectory(expand("~/.vim/plugged/nvim-jdtls"))
   nnoremap <leader>ac <Cmd>lua require('jdtls').code_action()<CR>
   vnoremap <leader>ac <Esc><Cmd>lua require('jdtls').code_action(true)<CR>
 endif
 
 "TELESCOPE CONFIG
 "----------------
-if filereadable(expand("~/.vim/plugged/telescope.nvim/plugin/telescope.vim"))
+if isdirectory(expand("~/.vim/plugged/telescope.nvim"))
   nnoremap <C-p> :lua require'telescope.builtin'.find_files{}<cr>
   nnoremap <leader>rg <cmd>Telescope live_grep<cr>
   nnoremap <leader>bb <cmd>Telescope buffers<cr>
@@ -281,7 +281,7 @@ endif
 
 "TREESITTER CONFIG
 "-----------------
-if filereadable(expand("~/.vim/plugged/nvim-treesitter/plugin/nvim-treesitter.vim"))
+if isdirectory(expand("~/.vim/plugged/nvim-treesitter"))
     lua << EOF
         require'nvim-treesitter.configs'.setup {
         -- Modules and its options go here
@@ -292,7 +292,7 @@ if filereadable(expand("~/.vim/plugged/nvim-treesitter/plugin/nvim-treesitter.vi
 EOF
 endif
 
-if filereadable(expand("~/.vim/plugged/vimspector/plugin/vimspector.vim"))
+if isdirectory(expand("~/.vim/plugged/vimspector"))
   nnoremap <leader>c :call vimspector#Continue()<cr>
   nnoremap <leader>i :call vimspector#StepInto()<cr>
   nnoremap <leader>o :call vimspector#StepOver()<cr>
@@ -301,7 +301,7 @@ if filereadable(expand("~/.vim/plugged/vimspector/plugin/vimspector.vim"))
   nnoremap <leader>tb :call vimspector#ToggleBreakpoint()<cr>
 endif
 
-if filereadable(expand("~/.vim/plugged/feline.nvim/USAGE.md"))
+if isdirectory(expand("~/.vim/plugged/feline.nvim"))
   lua << EOF
   local lsp_status = require('lsp-status')
 
@@ -366,6 +366,6 @@ EOF
     lua require('feline').setup()
 endif
 
-if filereadable(expand("~/.vim/plugged/vim-test/plugin/test.vim"))
+if isdirectory(expand("~/.vim/plugged/vim-test"))
     let g:test#strategy = "floaterm"
 endif
