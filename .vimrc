@@ -301,10 +301,6 @@ if filereadable(expand("~/.vim/plugged/vimspector/plugin/vimspector.vim"))
   nnoremap <leader>tb :call vimspector#ToggleBreakpoint()<cr>
 endif
 
-if filereadable(expand("~/.vim/plugged/vim-test/plugin/test.vim"))
-    let g:test#strategy = "floaterm"
-endif
-
 if filereadable(expand("~/.vim/plugged/feline.nvim/USAGE.md"))
   lua << EOF
   local lsp_status = require('lsp-status')
