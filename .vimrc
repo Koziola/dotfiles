@@ -248,6 +248,8 @@ if isdirectory(expand("~/.vim/plugged/nvim-cmp"))
       -- { name = 'snippy' }, -- For snippy users.
     }, {
       { name = 'buffer' },
+    }, {
+      { name = 'path' }
     })
   })
 
@@ -255,9 +257,7 @@ if isdirectory(expand("~/.vim/plugged/nvim-cmp"))
   -- Use buffer source for `/` (if you enabled `native_menu`, this won't work anymore).
   cmp.setup.cmdline('/', {
     mapping = cmp.mapping.preset.cmdline(),
-    sources = {
-      { name = 'buffer' }
-    }
+    sources = cmp.config.sources({{name = 'path'}}, {{name = 'buffer'}})
   })
 
   -- Use cmdline & path source for ':' (if you enabled `native_menu`, this won't work anymore).
