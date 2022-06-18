@@ -29,7 +29,7 @@ Plug 'windwp/nvim-autopairs'
 " Buffer explorer
 Plug 'jlanzarotta/bufexplorer'
 
-" Kill buffers without losing splits (thank god)
+" Kill buffers without losing splits
 Plug 'qpkorr/vim-bufkill'
 
 " post install (yarn install | npm install) then load plugin only for editing supported files
@@ -42,14 +42,16 @@ Plug 'fatih/vim-go', {'do': ':GoUpdateBinaries'}
 
 "Neovim LSP Plugins
 Plug 'neovim/nvim-lspconfig'
-Plug 'nvim-lua/completion-nvim'
 Plug 'tjdevries/lsp_extensions.nvim'
 Plug 'nvim-lua/lsp-status.nvim'
+Plug 'jose-elias-alvarez/null-ls.nvim', {'branch': 'main'}
 "More flexible configuration for java lsp
 Plug 'mfussenegger/nvim-jdtls'
-Plug 'scalameta/nvim-metals'
-Plug 'hrsh7th/nvim-cmp'
-Plug 'hrsh7th/cmp-nvim-lsp'
+Plug 'hrsh7th/nvim-cmp', {'branch': 'main'}
+Plug 'hrsh7th/cmp-nvim-lsp', {'branch': 'main'}
+Plug 'hrsh7th/cmp-vsnip', {'branch': 'main'}
+Plug 'hrsh7th/vim-vsnip'
+"Plug 'ms-jpq/coq_nvim', {'branch':'coq'}
 
 "Floating terminal windows
 Plug 'voldikss/vim-floaterm'

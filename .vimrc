@@ -155,11 +155,23 @@ if isdirectory(expand("~/.vim/plugged/nvim-lspconfig"))
   lua vim.lsp.set_log_level("info")
 lua <<EOF
   lspconfig = require "lspconfig"
-  completion = require "completion"
+  completion = require "cmp_nvim_lsp"
   lsp_status = require "lsp-status"
 
+  local completion_capabilities = completion.update_capabilities(vim.lsp.protocol.make_client_capabilities())
+
+  local custom_capabilities = {}
+  table.insert(custom_capabilities, lsp_status.capabilities)
+  table.insert(custom_capabilities, completion_capabilities)
+
+  local custom_on_attach = function(client)
+    -- completion.on_attach(client)
+    lsp_status.on_attach(client)
+  end
+
   lspconfig.gopls.setup {
-    on_attach=require'completion'.on_attach,
+    on_attach=custom_on_attach,
+    capabilities=custom_capabilities,
     cmd = {"gopls", "serve"},
     settings = {
       gopls = {
@@ -172,26 +184,17 @@ lua <<EOF
   }
 
   lspconfig.tsserver.setup {
-    on_attach=function(client)
-        completion.on_attach(client)
-        lsp_status.on_attach(client)
-    end,
-    capabilities=lsp_status.capabilities
+    on_attach=custom_on_attach,
+    capabilities=custom_capabilities
   }
 EOF
 
-  "lua require'lspconfig'.tsserver.setup{
-      "on_attach=require'completion'.on_attach 
-  "}
-
-  "imap <silent> <C-Space> <Plug>(completion_trigger)
-  "imap <tab> <Plug>(completion_smart_tab)
   nmap <silent> gd :lua vim.lsp.buf.definition()<CR>
   nmap gi :lua vim.lsp.buf.implementation()<CR>
   nmap <leader>k :lua vim.lsp.buf.signature_help()<CR>
   nmap <silent> <leader>r :lua vim.lsp.buf.references()<CR>
   nmap <leader>rn :lua vim.lsp.buf.rename()<CR>
-  nmap <leader>h :lua vim.lsp.buf.document_highlight()<CR>
+  nmap <leader>h :lua vim.lsp.buf.hover()<CR>
   nmap <leader>ac :lua vim.lsp.buf.code_action()<CR>
   nmap <leader>sd :lua vim.lsp.diagnostic.show_line_diagnostics()<CR>
   nmap <leader>wl :lua print(vim.inspect(vim.lsp.buf.list_workspace_folders()))<CR>
@@ -203,6 +206,11 @@ if isdirectory(expand("~/.vim/plugged/nvim-cmp"))
   lua << EOF
   local cmp = require'cmp'
   cmp.setup({
+    snippet = {
+        expand = function(args)
+            vim.fn['vsnip#anonymous'](args.body)
+        end,
+    },
     mapping = {
       ['<C-d>'] = cmp.mapping(cmp.mapping.scroll_docs(-4), { 'i', 'c' }),
       ['<C-f>'] = cmp.mapping(cmp.mapping.scroll_docs(4), { 'i', 'c' }),
@@ -213,10 +221,24 @@ if isdirectory(expand("~/.vim/plugged/nvim-cmp"))
         c = cmp.mapping.close(),
       }),
       ['<CR>'] = cmp.mapping.confirm({ select = true }),
+      ['<C-n>'] = cmp.mapping(function(fallback)
+        if cmp.visible() then
+          cmp.select_next_item()
+        else
+          fallback()
+        end
+      end, {"i", "s"}),
+      ['<C-p>'] = cmp.mapping(function(fallback)
+        if cmp.visible() then
+          cmp.select_prev_item()
+        else
+          fallback()
+        end
+      end, {"i", "s"}),
     },
     sources = cmp.config.sources({
       { name = 'nvim_lsp' },
-      -- { name = 'vsnip' }, -- For vsnip users.
+      { name = 'vsnip' }, -- For vsnip users.
       -- { name = 'luasnip' }, -- For luasnip users.
       -- { name = 'ultisnips' }, -- For ultisnips users.
       -- { name = 'snippy' }, -- For snippy users.
@@ -225,8 +247,10 @@ if isdirectory(expand("~/.vim/plugged/nvim-cmp"))
     })
   })
 
+
   -- Use buffer source for `/` (if you enabled `native_menu`, this won't work anymore).
   cmp.setup.cmdline('/', {
+    mapping = cmp.mapping.preset.cmdline(),
     sources = {
       { name = 'buffer' }
     }
