@@ -332,14 +332,13 @@ if isdirectory(expand("~/.vim/plugged/feline.nvim"))
     indicator_info = "i",
     indicator_hint = "?",
     indicator_ok = "OK",
-    status_symbol = "LSP=> ",
     current_function = false,
   }
 
   local components = {
       -- left, middle, right sections
       active = {{}, {}, {}},
-      inactive = {{}}
+      inactive = {{}, {}, {}}
   }
 
   local vim_mode_component = {
@@ -379,6 +378,7 @@ if isdirectory(expand("~/.vim/plugged/feline.nvim"))
   table.insert(components.active[1], file_info_component)
   table.insert(components.active[3], lsp_client_component)
 
+  table.insert(components.inactive[1], file_info_component)
 
   require('feline').setup({
     components = components
