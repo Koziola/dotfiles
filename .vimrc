@@ -153,14 +153,15 @@ endif
 
 "NEOVIM LSP CLIENT CONFIG
 "------------------------
-if isdirectory(expand("~/.vim/plugged/nvim-lspconfig"))
+if isdirectory(expand('~/.vim/plugged/nvim-lspconfig'))
   let g:completion_matching_strategy_list = ['exact', 'substring', 'fuzzy']
   "let g:completion_enable_auto_popup = 0
-  lua vim.lsp.set_log_level("info")
 lua <<EOF
-  lspconfig = require "lspconfig"
-  completion = require "cmp_nvim_lsp"
-  lsp_status = require "lsp-status"
+  vim.lsp.set_log_level('info')
+  lspconfig = require 'lspconfig'
+  completion = require 'cmp_nvim_lsp'
+  lsp_status = require 'lsp-status'
+  require('trouble').setup()
 
   local completion_capabilities = completion.update_capabilities(vim.lsp.protocol.make_client_capabilities())
 
@@ -176,7 +177,7 @@ lua <<EOF
   lspconfig.gopls.setup {
     on_attach=custom_on_attach,
     capabilities=custom_capabilities,
-    cmd = {"gopls", "serve"},
+    cmd = {'gopls', 'serve'},
     settings = {
       gopls = {
         analyses = {
@@ -268,15 +269,7 @@ if isdirectory(expand("~/.vim/plugged/nvim-cmp"))
       { name = 'cmdline' }
     })
   })
-
-  -- Setup lspconfig.
-  -- local capabilities = require('cmp_nvim_lsp').update_capabilities(vim.lsp.protocol.make_client_capabilities())
-  -- Replace <YOUR_LSP_SERVER> with each lsp server you've enabled.
-   -- require('lspconfig')['jdtls'].setup {
-         -- capabilities = capabilities
-         -- }
 EOF
-
 endif
 
 if isdirectory(expand("~/.vim/plugged/nvim-jdtls"))
@@ -391,7 +384,6 @@ if isdirectory(expand("~/.vim/plugged/feline.nvim"))
     components = components
   })
 EOF
-    lua require('feline').setup()
 endif
 
 if isdirectory(expand("~/.vim/plugged/vim-test"))
