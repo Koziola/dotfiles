@@ -69,6 +69,10 @@ map <leader>ev :e ~/.vimrc<CR>
 " rebinding it to <C-b> which is also more ergonomic.
 map <C-b> <C-^>
 
+" Tab navigation - wonder why 'C-[' and 'C-]' don't work...
+nnoremap <C-j> gt 
+nnoremap <C-k> gT
+
 "Swap file location
 set directory^=$HOME/.vim/swap//
 
