@@ -44,6 +44,7 @@ Plug 'fatih/vim-go', {'do': ':GoUpdateBinaries'}
 Plug 'neovim/nvim-lspconfig'
 Plug 'nvim-lua/completion-nvim'
 Plug 'tjdevries/lsp_extensions.nvim'
+Plug 'nvim-lua/lsp-status.nvim'
 "More flexible configuration for java lsp
 Plug 'mfussenegger/nvim-jdtls'
 Plug 'scalameta/nvim-metals'
@@ -62,10 +63,11 @@ Plug 'nvim-telescope/telescope.nvim'
 Plug 'nvim-treesitter/nvim-treesitter', {'do': ':TSUpdate'}
 
 "Debugging and running tests.
-Plug 'puremourning/vimspector'
+"Plug 'puremourning/vimspector'
 Plug 'vim-test/vim-test'
 
 "Ricing the status bar 
 Plug 'famiu/feline.nvim'
+Plug 'kyazdani42/nvim-web-devicons'
 
 call plug#end()

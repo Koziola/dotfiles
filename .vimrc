@@ -155,6 +155,9 @@ if filereadable(expand("~/.vim/plugged/nvim-lspconfig/plugin/lspconfig.vim"))
   lua vim.lsp.set_log_level("info")
 lua <<EOF
   lspconfig = require "lspconfig"
+  completion = require "completion"
+  lsp_status = require "lsp-status"
+
   lspconfig.gopls.setup {
     on_attach=require'completion'.on_attach,
     cmd = {"gopls", "serve"},
@@ -167,9 +170,19 @@ lua <<EOF
       },
     },
   }
+
+  lspconfig.tsserver.setup {
+    on_attach=function(client)
+        completion.on_attach(client)
+        lsp_status.on_attach(client)
+    end,
+    capabilities=lsp_status.capabilities
+  }
 EOF
 
-  lua require'lspconfig'.tsserver.setup{ on_attach=require'completion'.on_attach }
+  "lua require'lspconfig'.tsserver.setup{
+      "on_attach=require'completion'.on_attach 
+  "}
 
   "imap <silent> <C-Space> <Plug>(completion_trigger)
   "imap <tab> <Plug>(completion_smart_tab)
@@ -293,6 +306,67 @@ if filereadable(expand("~/.vim/plugged/vim-test/plugin/test.vim"))
 endif
 
 if filereadable(expand("~/.vim/plugged/feline.nvim/USAGE.md"))
+  lua << EOF
+  local lsp_status = require('lsp-status')
+
+  lsp_status.config {
+    indicator_errors = "E",
+    indicator_warnings = "W",
+    indicator_info = "i",
+    indicator_hint = "?",
+    indicator_ok = "OK",
+    status_symbol = "LSP=> ",
+    current_function = false,
+  }
+
+  local components = {
+      -- left, middle, right sections
+      active = {{}, {}, {}},
+      inactive = {{}}
+  }
+
+  local vim_mode_component = {
+    provider = 'vi_mode',
+    hl = function()
+    return {
+        name = require('feline.providers.vi_mode').get_mode_highlight_name(),
+        fg = require('feline.providers.vi_mode').get_mode_color(),
+        style = 'bold'
+    }
+    end,
+  }
+
+  local file_info_component = {
+    provider = {
+        name = 'file_info',
+        opts = {
+            type = 'full-path'
+        }
+    },
+    short_provider = {
+        name = 'file_info',
+        opts = {
+            type = 'short-path'
+        }
+    }
+  }
+
+  local lsp_client_component = {
+    provider = function()
+      lsp_status.register_progress()
+      return lsp_status.status()
+    end
+  }
+
+  table.insert(components.active[1], vim_mode_component)
+  table.insert(components.active[1], file_info_component)
+  table.insert(components.active[3], lsp_client_component)
+
+
+  require('feline').setup({
+    components = components
+  })
+EOF
     lua require('feline').setup()
 endif
 
