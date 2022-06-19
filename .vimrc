@@ -144,13 +144,6 @@ endif
   "set noshowmode
 "endfun
 
-" Choose completion engine
-"augroup LSP
-  "autocmd!
-  "autocmd FileType go :call InitVimGo()
-"augroup END
-
-
 "NEOVIM LSP CLIENT CONFIG
 "------------------------
 if isdirectory(expand('~/.vim/plugged/nvim-lspconfig'))
@@ -205,7 +198,24 @@ EOF
   nmap <leader>wl :lua print(vim.inspect(vim.lsp.buf.list_workspace_folders()))<CR>
   set completeopt=menuone,noinsert,noselect
 
+  nnoremap <leader>xx <cmd>TroubleToggle<cr>
+  nnoremap <leader>xq <cmd>TroubleToggle quickfix<cr>
+
 endif
+
+if isdirectory(expand("~/.vim/plugged/null-ls.nvim"))
+  lua << EOF
+  local null_ls = require('null-ls')
+  null_ls.setup({
+    sources = {
+      null_ls.builtins.formatting.prettier,
+      null_ls.builtins.diagnostics.eslint,
+      null_ls.builtins.code_actions.eslint,
+      null_ls.builtins.completion.spell,
+    },
+  })
+EOF
+end
 
 if isdirectory(expand("~/.vim/plugged/nvim-cmp"))
   lua << EOF
@@ -260,21 +270,7 @@ if isdirectory(expand("~/.vim/plugged/nvim-cmp"))
     mapping = cmp.mapping.preset.cmdline(),
     sources = cmp.config.sources({{name = 'path'}}, {{name = 'buffer'}})
   })
-
-  -- Use cmdline & path source for ':' (if you enabled `native_menu`, this won't work anymore).
-  cmp.setup.cmdline(':', {
-    sources = cmp.config.sources({
-      { name = 'path' }
-    }, {
-      { name = 'cmdline' }
-    })
-  })
 EOF
-endif
-
-if isdirectory(expand("~/.vim/plugged/nvim-jdtls"))
-  nnoremap <leader>ac <Cmd>lua require('jdtls').code_action()<CR>
-  vnoremap <leader>ac <Esc><Cmd>lua require('jdtls').code_action(true)<CR>
 endif
 
 "TELESCOPE CONFIG
