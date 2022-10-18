@@ -4,6 +4,7 @@ local vnoremap = map.vnoremap
 local inoremap = map.inoremap
 local xnoremap = map.xnoremap
 local nmap = map.nmap
+local tnoremap = map.tnoremap
 
 -- Close the current buffer, but keep the window open (requires vim-bufkill
 -- extension)
@@ -31,3 +32,6 @@ nmap('<leader>sd', ':lua vim.diagnostic.open_float()<CR>')
 
 nmap('<leader>xx', '<cmd>TroubleToggle<CR>')
 nmap('<leader>xq', '<cmd>TroubleToggle quickfix<CR>')
+
+-- Use esc to escape terminal mode
+tnoremap('<S-z>', '<C-\\><C-n>')
