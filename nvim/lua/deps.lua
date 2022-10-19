@@ -43,16 +43,19 @@ return require('packer').startup(function(use)
   use 'neovim/nvim-lspconfig'
   use 'tjdevries/lsp_extensions.nvim'
   use 'nvim-lua/lsp-status.nvim'
+  use 'ray-x/lsp_signature.nvim'
   use 'jose-elias-alvarez/null-ls.nvim'-- , {'branch': 'main'}
   -- More flexible configuration for java lsp
   use 'mfussenegger/nvim-jdtls'
+
   use 'hrsh7th/nvim-cmp' 
   use 'hrsh7th/cmp-nvim-lsp' 
   use 'hrsh7th/cmp-vsnip'
   use 'hrsh7th/vim-vsnip'
   use 'hrsh7th/cmp-path'
-  use 'hrsh7th/cmp-buffer'
-  -- use 'ms-jpq/coq_nvim', {'branch':'coq'}
+  --use 'hrsh7th/cmp-buffer'
+  
+  --use 'ms-jpq/coq_nvim' -- , {'branch':'coq'}
   use 'folke/trouble.nvim'
   use 'folke/lua-dev.nvim'
   
