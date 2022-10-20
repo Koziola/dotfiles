@@ -37,10 +37,19 @@ cmp.setup({
     -- { name = 'ultisnips' }, -- For ultisnips users.
     -- { name = 'snippy' }, -- For snippy users.
   }, {
-    { name = 'buffer' },
+    --{ name = 'buffer' },
   }, {
     { name = 'path' }
-  })
+  }),
+  formatting = {
+    format = function(entry, vim_item)
+      vim_item.menu = ({
+        nvim_lsp = "[LSP]",
+        buffer = "[Buffer]"
+      })[entry.source.name]
+      return vim_item
+    end
+  }
 })
 
 
