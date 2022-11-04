@@ -15,11 +15,14 @@ return require('packer').startup(function(use)
   use 'tpope/vim-fugitive'
   use 'tpope/vim-surround'
   use 'tpope/vim-sleuth'
+  use 'jiangmiao/auto-pairs'
 
   use 'chriskempson/base16-vim'
   -- On-demand loading for NerdTree
   use 'scrooloose/nerdtree'-- , { 'on':  'NERDTreeToggle' }
   use 'scrooloose/nerdcommenter'
+
+  use 'lukas-reineke/indent-blankline.nvim'
   
   -- Automatically insert closing pairs for certain characters
   -- use 'raimondi/delimitmate'
