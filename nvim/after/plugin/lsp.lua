@@ -15,7 +15,13 @@ table.insert(custom_capabilities, lsp_status.capabilities)
 table.insert(custom_capabilities, completion_capabilities)
 
 local custom_on_attach = function(client)
-lsp_status.on_attach(client)
+  lsp_status.on_attach(client)
+  client.server_capabilities.document_formatting = false
+  client.server_capabilities.document_range_formatting = false
+
+  if client.config.flags then
+    client.config.flags.allow_incremental_sync = true
+  end
 end
 
 lspconfig.gopls.setup {
