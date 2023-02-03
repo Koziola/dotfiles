@@ -5,7 +5,7 @@ if fn.empty(fn.glob(install_path)) > 0 then
   vim.cmd [[packadd packer.nvim]]
 end
 
-local stripe = require('stripe-packages')
+-- local stripe = require('stripe-packages')
 
 return require('packer').startup(function(use)
   -- My plugins here
@@ -105,7 +105,7 @@ return require('packer').startup(function(use)
   use 'famiu/feline.nvim'
   use 'kyazdani42/nvim-web-devicons'
 
-  stripe.use_packages(use)
+  -- stripe.use_packages(use)
 
   -- Automatically set up your configuration after cloning packer.nvim
   -- Put this at the end after all plugins
