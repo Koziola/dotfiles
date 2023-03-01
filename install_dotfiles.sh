@@ -21,12 +21,9 @@ function install_local() {
     symlink nvim/after ~/.config/nvim/after
 }
 
-# used to copy dotfiles to a remote machine
-function install_remote() {
-    rsync -aq ./nvim/init.lua ~/.config/nvim/init.lua
-    rsync -aqr --delete ./nvim/lua ~/.config/nvim
-    rsync -aqr --delete ./nvim/after ~/.config/nvim
-}
+if [ ! -d ~/.config/nvim ]; then
+  mkdir -p ~/.config/nvim
+fi
 
 install_local
 
