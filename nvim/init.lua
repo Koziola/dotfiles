@@ -1,4 +1,4 @@
-require('deps')
+--require('deps')
 
 local opt = vim.opt
 opt.number = true
@@ -28,11 +28,12 @@ opt.termguicolors = true
 
 opt.swapfile = false
 
--- this doesn't work...
-colorscheme = 'gruvbox'
 
 -- vim.cmd('nnoremap <SPACE> <nop>')
 vim.g.mapleader = " "
 vim.g.maplocalleader = " "
 
+require('deps-lazy')
 require('keybinds')
+
+vim.cmd.colorscheme({args = {"base16-gruvbox-dark-medium"}})
