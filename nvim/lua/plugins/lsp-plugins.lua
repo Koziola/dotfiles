@@ -51,6 +51,12 @@ return {
             vim.lsp.buf.signature_help,
             { buffer = args.buf, desc = "LSP: Signature Documentation" }
           )
+          vim.keymap.set("n", "<leader>ds", function()
+              vim.diagnostic.open_float(0, { scope = "line", border = "rounded" })
+            end, { desc = "[D]iagnostics [S]how" })
+          vim.keymap.set("n", "[d", vim.diagnostic.goto_prev, { desc = "Previous diagnostic" })
+          vim.keymap.set("n", "]d", vim.diagnostic.goto_next, { desc = "Next diagnostic" })
+          vim.keymap.set("n", "<leader>dl", vim.diagnostic.setloclist, { desc = "[D]iagnostics set [L]oclist" })
 
           -- Format on save for these filetypes
           local autoformat_filetypes = { "ruby", "lua" }
