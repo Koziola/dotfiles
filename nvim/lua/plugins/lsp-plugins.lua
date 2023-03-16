@@ -1,132 +1,95 @@
 return {
   {
-    'VonHeikemen/lsp-zero.nvim',
+    'neovim/nvim-lspconfig',
     dependencies = {
-      'neovim/nvim-lspconfig',
-      'williamboman/mason.nvim',
-      'williamboman/mason-lspconfig.nvim',
-      -- Autocompletion
-      'hrsh7th/nvim-cmp',
-      'hrsh7th/cmp-buffer',
-      'hrsh7th/cmp-path',
-      'saadparwaiz1/cmp_luasnip',
-      'hrsh7th/cmp-nvim-lsp',
-      'hrsh7th/cmp-nvim-lua',
-      -- Snippets
-      'L3MON4D3/LuaSnip',
-      config = function()
-        local lsp = require('lsp-zero')
-        local cmp = require('cmp')
+      "hrsh7th/cmp-nvim-lsp",
+      {
+        "j-hui/fidget.nvim",
+        opts = {
+          text = { spinner = "dots" },
+          window = { relative = "editor" },
+        },
+      },
+    },
+    config = function()
+      local lsp_group = vim.api.nvim_create_augroup("KickstartLSP", {})
+      -- Customize the UI of floating windows
+      vim.lsp.handlers["textDocument/hover"] = vim.lsp.with(vim.lsp.handlers.hover, { border = "rounded" })
+      vim.lsp.handlers["textDocument/signatureHelp"] =
+        vim.lsp.with(vim.lsp.handlers.signature_help, { border = "rounded" })
 
-        lsp.preset('recommended')
-        lsp.ensure_installed({
-          'tsserver',
-        })
-
-        lsp.set_preferences({
-          suggest_lsp_servers = false,
-        })
-
-        lsp.on_attach(function(client)
-          lsp_status.on_attach(client)
-          client.server_capabilities.document_formatting = false
-          client.server_capabilities.document_range_formatting = false
-
-          if client.config.flags then
-            client.config.flags.allow_incremental_sync = true
+      --  This gets run when a LSP client connects to a particular buffer
+      local autoformat_group = vim.api.nvim_create_augroup("LspAutoformat", { clear = true })
+      vim.api.nvim_create_autocmd("LspAttach", {
+        desc = "Set custom keymaps and create autocmds",
+        pattern = "*",
+        group = lsp_group,
+        callback = function(args)
+          local client = vim.lsp.get_client_by_id(args.data.client_id)
+          -- helper function for setting up buffer-local keymaps
+          local nmap = function(keys, func, desc)
+            vim.keymap.set("n", keys, func, { buffer = args.buf, desc = "LSP: " .. desc })
           end
-        end)
 
-        lsp.configure('tsserver', {
-          init_options = {
-            maxTsServerMemory = '8192',
-            preferences = {
-              importModuleSpecifierPreference = 'non-relative',
-            }
-          }
-        })
+          nmap("<leader>r", vim.lsp.buf.rename, "[R]ename")
+          nmap("<leader>ca", vim.lsp.buf.code_action, "[C]ode [A]ction")
 
-        lsp.setup_nvim_cmp({
-          mapping = {
-            ['<C-d>'] = cmp.mapping(cmp.mapping.scroll_docs(-4), { 'i', 'c' }),
-            ['<C-f>'] = cmp.mapping(cmp.mapping.scroll_docs(4), { 'i', 'c' }),
-            ['<C-Space>'] = cmp.mapping(cmp.mapping.complete(), { 'i', 'c' }),
-            ['<C-y>'] = cmp.config.disable, -- Specify `cmp.config.disable` if you want to remove the default `<C-y>` mapping.
-            ['<C-e>'] = cmp.mapping({
-              i = cmp.mapping.abort(),
-              c = cmp.mapping.close(),
-            }),
-            ['<CR>'] = cmp.mapping.confirm({ select = true }),
-            ['<C-n>'] = cmp.mapping(function(fallback)
-              if cmp.visible() then
-                cmp.select_next_item()
-              else
-                fallback()
-              end
-            end, {'i', 's'}),
-            ['<C-p>'] = cmp.mapping(function(fallback)
-              if cmp.visible() then
-                cmp.select_prev_item()
-              else
-                fallback()
-              end
-            end, {'i', 's'}),
-           }
-        })
-        lsp.setup()
+          nmap("gd", vim.lsp.buf.definition, "[G]oto [D]efinition")
+          nmap("gi", vim.lsp.buf.implementation, "[G]oto [I]mplementation")
+          nmap("gr", require("telescope.builtin").lsp_references, "[G]oto [R]eferences")
+          nmap("gD", vim.lsp.buf.declaration, "[G]oto [D]eclaration")
+          nmap("<leader>D", vim.lsp.buf.type_definition, "Type [D]efinition")
+          nmap("=", function()
+            vim.lsp.buf.format({
+              async = true,
+            })
+          end, "Format buffer")
+          nmap("K", vim.lsp.buf.hover, "Hover Documentation")
+          vim.keymap.set(
+            { "n", "i" },
+            "<C-k>",
+            vim.lsp.buf.signature_help,
+            { buffer = args.buf, desc = "LSP: Signature Documentation" }
+          )
 
-        local lsp_group = vim.api.nvim_create_augroup('KickstartLSP', {})
-        local autoformat_group = vim.api.nvim_create_augroup('LspAutoformat', { clear = true })
-        vim.api.nvim_create_autocmd('LspAttach', {
-          desc = 'Set custom keymaps and create autocmds',
-          pattern = '*',
-          group = lsp_group,
-          callback = function(args)
-            local nmap = require('keymap').nmap
-            nmap('gd', ':lua vim.lsp.buf.definition()<CR>')
-            nmap('gi', ':lua vim.lsp.buf.implementation()<CR>')
-            nmap('<leader>k', ':lua vim.lsp.buf.signature_help()<CR>')
-            nmap('<leader>h', ':lua vim.lsp.buf.hover()<CR>')
-            nmap('<leader>r', ':lua vim.lsp.buf.references()<CR>')
-            nmap('<leader>rn', ':lua vim.lsp.buf.rename()<CR>')
-            nmap('<leader>ac', ':lua vim.lsp.buf.code_action()<CR>')
-            nmap('<leader>sd', ':lua vim.diagnostic.open_float()<CR>')
-            nmap('=', function()
-              vim.lsp.buf.format({async = true,})
-            end)
-
-            local autoformat_filetypes = { 'ruby', 'lua', 'typescript', 'typescriptreact' }
-            if
-              client.server_capabilities.documentFormattingProvider
-              and vim.tbl_contains(autoformat_filetypes, vim.bo[args.buf].filetype)
-            then
-              -- Remove prior autocmds so this only triggers once
-              vim.api.nvim_clear_autocmds({
-                group = autoformat_group,
-                buffer = args.buf,
-              })
-              vim.api.nvim_create_autocmd('BufWritePre', {
-                callback = function()
-                  vim.lsp.buf.format({
-                    timeout_ms = 500,
-                  })
-                end,
-                group = autoformat_group,
-                buffer = args.buf,
-              })
-            end
+          -- Format on save for these filetypes
+          local autoformat_filetypes = { "ruby", "lua" }
+          if
+            client.server_capabilities.documentFormattingProvider
+            and vim.tbl_contains(autoformat_filetypes, vim.bo[args.buf].filetype)
+          then
+            -- Remove prior autocmds so this only triggers once
+            vim.api.nvim_clear_autocmds({
+              group = autoformat_group,
+              buffer = args.buf,
+            })
+            vim.api.nvim_create_autocmd("BufWritePre", {
+              callback = function()
+                vim.lsp.buf.format({
+                  timeout_ms = 500,
+                })
+              end,
+              group = autoformat_group,
+              buffer = args.buf,
+            })
           end
-        })
+        end,
+      })
 
+      local capabilities = require("cmp_nvim_lsp").default_capabilities()
+      local servers = { "gopls", "tsserver" }
+      for _, lsp in ipairs(servers) do
+        require("lspconfig")[lsp].setup({
+          capabilities = capabilities,
+        })
       end
-    }
+    end
   },
   {
     'jose-elias-alvarez/null-ls.nvim',
-    dependencies = { 'neovim/nvim-lspconfig', { url = 'git@git.corp.stripe.com:nms/nvim-lspconfig-stripe.git' } },
+    dependencies = { 'neovim/nvim-lspconfig'},
     config = function()
       local null_ls = require('null-ls')
-      local nullls_stripe = require('lspconfig_stripe.null_ls')
       local helpers = require('null-ls.helpers')
       local null_utils = require('null-ls.utils')
       local function has_exe(name)
@@ -140,15 +103,7 @@ return {
         end,
         sources = {
           -- JavaScript, typescript
-          nullls_stripe.diagnostics.eslint_d,
-          nullls_stripe.formatting.eslint_d,
           null_ls.builtins.formatting.prettierd,
-
-          -- Horizon stack
-          nullls_stripe.formatting.format_java,
-          nullls_stripe.formatting.format_build,
-          nullls_stripe.formatting.format_scala,
-          nullls_stripe.formatting.format_sql,
 
           -- go
           null_ls.builtins.formatting.goimports.with({

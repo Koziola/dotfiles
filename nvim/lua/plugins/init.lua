@@ -7,6 +7,12 @@ return {
   },
   'tpope/vim-surround',
   'tpope/vim-sleuth',
+  {
+    'numToStr/Comment.nvim',
+    config = function()
+      require('Comment').setup()
+    end
+  },
   'chriskempson/base16-vim',
   { 'folke/which-key.nvim', config = true },
   { -- File tree
@@ -128,6 +134,64 @@ return {
     config = function(_, opts)
       require('bufferline').setup(opts)
       vim.keymap.set('n', 'go', '<cmd>BufferLinePick<CR>', { desc = '[G]oto [O]pen buffer' })
+    end,
+  },
+  {
+    'hrsh7th/nvim-cmp',
+    dependencies = {
+      'hrsh7th/cmp-nvim-lsp',
+      'hrsh7th/cmp-path',
+      'saadparwaiz1/cmp_luasnip',
+      'onsails/lspkind-nvim',
+      'L3MON4D3/LuaSnip',
+    },
+    event = 'InsertEnter *',
+    config = function()
+      local cmp = require('cmp')
+      local luasnip = require('luasnip')
+
+      cmp.setup({
+        formatting = {
+          format = require('lspkind').cmp_format({ mode = 'symbol' }),
+        },
+        snippet = {
+          expand = function(args)
+            luasnip.lsp_expand(args.body)
+          end,
+        },
+        mapping = cmp.mapping.preset.insert({
+          ['<C-d>'] = cmp.mapping.scroll_docs(-4),
+          ['<C-f>'] = cmp.mapping.scroll_docs(4),
+          ['<C-Space>'] = cmp.mapping.complete(),
+          ['<CR>'] = cmp.mapping.confirm({
+            behavior = cmp.ConfirmBehavior.Replace,
+            select = true,
+          }),
+          ['<Tab>'] = cmp.mapping(function(fallback)
+            if luasnip.expand_or_jumpable() then
+              luasnip.expand_or_jump()
+            elseif cmp.visible() then
+              cmp.select_next_item()
+            else
+              fallback()
+            end
+          end, { 'i', 's' }),
+          ['<S-Tab>'] = cmp.mapping(function(fallback)
+            if luasnip.jumpable(-1) then
+              luasnip.jump(-1)
+            elseif cmp.visible() then
+              cmp.select_prev_item()
+            else
+              fallback()
+            end
+          end, { 'i', 's' }),
+        }),
+        sources = {
+          { name = 'nvim_lsp' },
+          { name = 'luasnip' },
+          { name = 'path' },
+        },
+      })
     end,
   },
   { -- Highlight, edit, and navigate code
