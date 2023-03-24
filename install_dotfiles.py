@@ -37,6 +37,8 @@ def main():
     nvim_dotfiles_dir = current_dir.joinpath(NVIM)
 
     install_directory(nvim_dotfiles_dir, NVIM_DIR)
+
+    symlink_if_not_exists(current_dir.joinpath(".tmux.conf"), os.path.join(os.path.expanduser("~"), ".tmux.conf"))
     print("Complete!")
 
 if __name__ == "__main__":
