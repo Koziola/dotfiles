@@ -120,6 +120,7 @@ return {
     config = function(_, opts)
       require('fzf-lua').setup(opts)
       vim.keymap.set('n', '<leader>ff', require('fzf-lua').files, { desc = '[F]ind [F]iles' })
+      vim.keymap.set('n', '<C-p>', require('fzf-lua').files, { desc = 'Find Files' })
     end,
   },
   { -- Show buffers in the tabline
