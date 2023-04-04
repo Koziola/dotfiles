@@ -85,9 +85,22 @@ return {
       local capabilities = require("cmp_nvim_lsp").default_capabilities()
       local servers = { "gopls", "tsserver" }
       for _, lsp in ipairs(servers) do
-        require("lspconfig")[lsp].setup({
-          capabilities = capabilities,
-        })
+        if lsp == "tsserver" then
+          require("lspconfig")[lsp].setup({
+            capabilities = capabilities,
+            cmd_env = { NODE_OPTIONS = "--max-old-space-size=8192" }, -- Give 8gb of RAM to node
+            init_options = {
+              maxTsServerMemory = "8192",
+              preferences = {
+                importModuleSpecifierPreference = "non-relative",
+              }
+            }
+          })
+        else
+          require("lspconfig")[lsp].setup({
+            capabilities = capabilities,
+          })
+        end
       end
     end
   },
