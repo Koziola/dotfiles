@@ -121,6 +121,7 @@ return {
       require('fzf-lua').setup(opts)
       vim.keymap.set('n', '<leader>ff', require('fzf-lua').files, { desc = '[F]ind [F]iles' })
       vim.keymap.set('n', '<C-p>', require('fzf-lua').files, { desc = 'Find Files' })
+      vim.keymap.set('n', '<C-l>', require('fzf-lua').live_grep, { desc = '[L]ive Grep' })
     end,
   },
   { -- Show buffers in the tabline
