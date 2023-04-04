@@ -271,7 +271,7 @@ return {
     opts = {
       options = {
         icons_enabled = true,
-        theme = 'gruvbox_dark',
+        theme = "auto",
         section_separators = '',
       },
       sections = {
