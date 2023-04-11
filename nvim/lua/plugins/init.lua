@@ -142,6 +142,8 @@ return {
     config = function(_, opts)
       require('bufferline').setup(opts)
       vim.keymap.set('n', 'go', '<cmd>BufferLinePick<CR>', { desc = '[G]oto [O]pen buffer' })
+      vim.keymap.set('n', 'gO', '<cmd>BufferLinePickClose<CR>')
+      vim.keymap.set('n', 'gp', '<cmd>BufferLineTogglePin<CR>', {desc = '[G]oto [P]in buffer'})
     end,
   },
   {
@@ -295,4 +297,5 @@ return {
       extensions = { 'aerial', 'nvim-tree', 'fugitive', 'fzf', 'toggleterm', 'quickfix' },
     },
   }
+  'airblade/vim-gitgutter.git'
 }
