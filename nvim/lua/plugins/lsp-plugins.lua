@@ -59,7 +59,7 @@ return {
           vim.keymap.set("n", "<leader>dl", vim.diagnostic.setloclist, { desc = "[D]iagnostics set [L]oclist" })
 
           -- Format on save for these filetypes
-          local autoformat_filetypes = { "ruby", "lua" }
+          local autoformat_filetypes = { "ruby", "lua", "typescript", "typescriptreact" }
           if
             client.server_capabilities.documentFormattingProvider
             and vim.tbl_contains(autoformat_filetypes, vim.bo[args.buf].filetype)

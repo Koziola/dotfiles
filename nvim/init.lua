@@ -23,7 +23,7 @@ opt.backspace= {'indent', 'eol', 'start'}
 
 opt.showmatch = true
 
-opt.background = 'dark'
+opt.background = 'light'
 opt.termguicolors = true
 
 opt.swapfile = false
@@ -36,4 +36,4 @@ vim.g.maplocalleader = " "
 require('deps-lazy')
 require('keybinds')
 
-vim.cmd.colorscheme({args = {"base16-gruvbox-dark-medium"}})
+vim.cmd.colorscheme({args = {"tokyonight-day"}})

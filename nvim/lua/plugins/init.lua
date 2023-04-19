@@ -14,6 +14,7 @@ return {
     end
   },
   'chriskempson/base16-vim',
+  'folke/tokyonight.nvim',
   { 'folke/which-key.nvim', config = true },
   { -- File tree
     'kyazdani42/nvim-tree.lua',
@@ -97,7 +98,7 @@ return {
       vim.keymap.set('n', '<leader>tl', neotest.run.run_last, { desc = '[T]est [L]ast' })
       vim.keymap.set('n', '<leader>ts', neotest.summary.toggle, { desc = '[T]est toggle [S]ummary' })
       vim.keymap.set('n', '<leader>to', function()
-        neotest.output.open({ short = true })
+        neotest.output.open()
       end, { desc = '[T]est [O]utput' })
     end,
   },
@@ -255,10 +256,10 @@ return {
       local function find_repo_name()
         return vim.fn.fnamemodify(vim.fn.finddir('.git', '.;'), ':p:h:h:t')
       end
-      vim.keymap.set('n', '<leader>fs', function()
-        require('telescope').load_extension('aerial')
-        vim.cmd('Telescope aerial')
-      end, { desc = '[F]ind Document [S]ymbol' })
+      -- vim.keymap.set('n', '<leader>fs', function()
+      --   require('telescope').load_extension('aerial')
+      --   vim.cmd('Telescope aerial')
+      -- end, { desc = '[F]ind Document [S]ymbol' })
       vim.keymap.set('n', '<leader>/', function()
         -- You can pass additional configuration to telescope to change theme, layout, etc.
         require('telescope.builtin').current_buffer_fuzzy_find(require('telescope.themes').get_dropdown({
@@ -296,6 +297,6 @@ return {
       },
       extensions = { 'aerial', 'nvim-tree', 'fugitive', 'fzf', 'toggleterm', 'quickfix' },
     },
-  }
-  'airblade/vim-gitgutter.git'
+  },
+  'airblade/vim-gitgutter'
 }

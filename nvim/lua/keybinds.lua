@@ -8,7 +8,7 @@ local tnoremap = map.tnoremap
 
 -- Close the current buffer, but keep the window open (requires vim-bufkill
 -- extension)
-nmap('<leader>d', ':bd<CR>')
+-- nmap('<leader>d', ':bd<CR>')
 
 -- List all open buffers
 nmap('<leader>bb', ':buffers<CR>')
