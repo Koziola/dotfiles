@@ -155,15 +155,20 @@ return {
       'saadparwaiz1/cmp_luasnip',
       'onsails/lspkind-nvim',
       'L3MON4D3/LuaSnip',
+      'kyazdani42/nvim-web-devicons',
     },
     event = 'InsertEnter *',
     config = function()
       local cmp = require('cmp')
       local luasnip = require('luasnip')
+      local lspkind = require('lspkind')
+      lspkind.init({
+        preset = 'codicons'
+      })
 
       cmp.setup({
         formatting = {
-          format = require('lspkind').cmp_format({ mode = 'symbol' }),
+          format = lspkind.cmp_format({ mode = 'symbol_text' }),
         },
         snippet = {
           expand = function(args)
