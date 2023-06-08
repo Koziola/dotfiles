@@ -39,11 +39,6 @@ return {
           nmap("gr", require("telescope.builtin").lsp_references, "[G]oto [R]eferences")
           nmap("gD", vim.lsp.buf.declaration, "[G]oto [D]eclaration")
           nmap("<leader>D", vim.lsp.buf.type_definition, "Type [D]efinition")
-          nmap("=", function()
-            vim.lsp.buf.format({
-              async = true,
-            })
-          end, "Format buffer")
           nmap("K", vim.lsp.buf.hover, "Hover Documentation")
           vim.keymap.set(
             { "n", "i" },
