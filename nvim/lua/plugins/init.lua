@@ -209,6 +209,7 @@ return {
         },
         sorting = {
           comparators = {
+            -- Learned about this from this GH issue: https://github.com/hrsh7th/nvim-cmp/issues/381
             cmp.config.compare.offset,
             cmp.config.compare.exact,
             cmp.config.compare.score,
