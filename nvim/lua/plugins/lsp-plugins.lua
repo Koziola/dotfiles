@@ -68,6 +68,8 @@ return {
               callback = function()
                 vim.lsp.buf.format({
                   timeout_ms = 500,
+                  -- ignore tsserver formatting. Should use prettier or eslint instead.
+                  filter = function(client) return client.name ~= "tsserver" end
                 })
               end,
               group = autoformat_group,
