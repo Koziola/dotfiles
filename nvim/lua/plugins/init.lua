@@ -15,6 +15,7 @@ return {
   },
   'chriskempson/base16-vim',
   'folke/tokyonight.nvim',
+  { 'rose-pine/neovim', name = 'rose-pine'},
   { 'folke/which-key.nvim', config = true },
   { -- File tree
     'kyazdani42/nvim-tree.lua',
