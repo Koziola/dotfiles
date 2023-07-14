@@ -5,6 +5,7 @@ return {
       "hrsh7th/cmp-nvim-lsp",
       {
         "j-hui/fidget.nvim",
+        tag = "legacy",
         opts = {
           text = { spinner = "dots" },
           window = { relative = "editor" },
