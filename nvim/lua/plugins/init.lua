@@ -126,28 +126,6 @@ return {
       vim.keymap.set('n', '<C-l>', require('fzf-lua').live_grep, { desc = '[L]ive Grep' })
     end,
   },
-  { -- Show buffers in the tabline
-    'akinsho/bufferline.nvim',
-    opts = {
-      options = {
-        diagnostics = 'nvim_lsp',
-        offsets = {
-          {
-            filetype = 'NvimTree',
-            text = 'Explorer',
-            highlight = 'PanelHeading',
-            padding = 1,
-          },
-        },
-      },
-    },
-    config = function(_, opts)
-      require('bufferline').setup(opts)
-      vim.keymap.set('n', 'go', '<cmd>BufferLinePick<CR>', { desc = '[G]oto [O]pen buffer' })
-      vim.keymap.set('n', 'gO', '<cmd>BufferLinePickClose<CR>')
-      vim.keymap.set('n', 'gp', '<cmd>BufferLineTogglePin<CR>', {desc = '[G]oto [P]in buffer'})
-    end,
-  },
   {
     'hrsh7th/nvim-cmp',
     dependencies = {
@@ -286,6 +264,7 @@ return {
       vim.keymap.set('n', '<leader>fr', require('telescope.builtin').oldfiles, { desc = '[F]ind [R]ecent files' })
       vim.keymap.set('n', '<leader>fc', require('telescope.builtin').commands, { desc = '[F]ind [C]ommand' })
       vim.keymap.set('n', '<leader>fk', require('telescope.builtin').keymaps, { desc = '[F]ind [K]eymaps' })
+      -- vim.keymap.set('n', '<C-p>', require('telescope.builtin').find_files)
       local function find_repo_name()
         return vim.fn.fnamemodify(vim.fn.finddir('.git', '.;'), ':p:h:h:t')
       end
@@ -331,5 +310,53 @@ return {
       extensions = { 'aerial', 'nvim-tree', 'fugitive', 'fzf', 'toggleterm', 'quickfix' },
     },
   },
-  'airblade/vim-gitgutter'
+  'airblade/vim-gitgutter',
+  {
+    'mhartington/formatter.nvim',
+    config = function() 
+      local prettierd = function()
+        return {
+          exe = "prettierd",
+          args = {vim.api.nvim_buf_get_name(0)},
+          stdin = true
+        }
+      end
+
+      require('formatter').setup({
+        logging = false,
+        filetype = {
+          javascript = {prettierd},
+          typescript = {prettierd},
+          typescriptreact = {prettierd},
+          javascriptreact = {prettierd},
+          json = {prettierd},
+          html = {prettierd},
+          css = {prettierd},
+          scss = {prettierd},
+          markdown = {prettierd},
+          lua = {
+            function()
+              return {
+                exe = "stylua",
+                args = {
+                  "--config-path",
+                  vim.fn.expand("~/.config/stylua.toml"),
+                  "-",
+                },
+                stdin = true,
+              }
+            end
+          },
+        }
+      })
+
+      -- set keybind
+      vim.keymap.set('n', '<leader>F', '<cmd>Format<CR>', { desc = '[F]ormat' })
+      local format_group = vim.api.nvim_create_augroup("Format", { clear = true })
+      vim.api.nvim_create_autocmd("BufWritePost", {
+        command = "FormatWrite",
+        group = format_group,
+      })
+    end
+  }
 }
