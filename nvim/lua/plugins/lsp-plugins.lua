@@ -37,7 +37,7 @@ return {
 
           nmap("gd", vim.lsp.buf.definition, "[G]oto [D]efinition")
           nmap("gi", vim.lsp.buf.implementation, "[G]oto [I]mplementation")
-          nmap("gr", require("telescope.builtin").lsp_references, "[G]oto [R]eferences")
+          nmap("gr", function() require("telescope.builtin").lsp_references({fname_width = 100, show_line = false}) end, "[G]oto [R]eferences")
           nmap("gD", vim.lsp.buf.declaration, "[G]oto [D]eclaration")
           nmap("<leader>D", vim.lsp.buf.type_definition, "Type [D]efinition")
           nmap("K", vim.lsp.buf.hover, "Hover Documentation")

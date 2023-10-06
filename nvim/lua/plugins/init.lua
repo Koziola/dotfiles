@@ -264,7 +264,6 @@ return {
       vim.keymap.set('n', '<leader>fr', require('telescope.builtin').oldfiles, { desc = '[F]ind [R]ecent files' })
       vim.keymap.set('n', '<leader>fc', require('telescope.builtin').commands, { desc = '[F]ind [C]ommand' })
       vim.keymap.set('n', '<leader>fk', require('telescope.builtin').keymaps, { desc = '[F]ind [K]eymaps' })
-      -- vim.keymap.set('n', '<C-p>', require('telescope.builtin').find_files)
       local function find_repo_name()
         return vim.fn.fnamemodify(vim.fn.finddir('.git', '.;'), ':p:h:h:t')
       end
@@ -279,6 +278,19 @@ return {
           previewer = false,
         }))
       end, { desc = '[/] Fuzzily search in current buffer' })
+
+      require('telescope').setup{
+        defaults = {
+          dynamic_preview_title = true,
+          path_display = function(opts, path)
+            local tail = require("telescope.utils").path_tail(path)
+            local repo = find_repo_name()
+            local path_desc = vim.fn.fnamemodify(path, ':.')
+
+            return string.format("%s (%s)", tail, path_desc)
+          end,
+        }
+      }
     end,
   },
   { -- Fancier statusline
