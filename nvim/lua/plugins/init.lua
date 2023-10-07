@@ -79,6 +79,7 @@ return {
             return s .. ' '
           end, { '⠋', '⠙', '⠹', '⠸', '⠼', '⠴', '⠦', '⠧', '⠇', '⠏' }),
         },
+        log_levels = vim.log.levels.WARN,
         output = {
           open_on_run = false,
         },
@@ -92,6 +93,10 @@ return {
       vim.keymap.set('n', '<leader>tn', function()
         neotest.run.run({})
       end, { desc = '[T]est [N]earest' })
+      vim.keymap.set('n', '<leader>td', function()
+        neotest.run.run({strategy = 'dap'})
+      end, { desc = '[T]est [D]ebug Nearest' })
+      vim.keymap.set('n', '<leader>tc', neotest.run.stop, { desc = '[T]est [C]ancel' })
       vim.keymap.set('n', '<leader>tl', neotest.run.run_last, { desc = '[T]est [L]ast' })
       vim.keymap.set('n', '<leader>ts', neotest.summary.toggle, { desc = '[T]est toggle [S]ummary' })
       vim.keymap.set('n', '<leader>to', function()
