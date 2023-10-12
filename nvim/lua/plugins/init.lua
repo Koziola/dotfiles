@@ -15,6 +15,8 @@ return {
   },
   'chriskempson/base16-vim',
   'folke/tokyonight.nvim',
+  'morhetz/gruvbox',
+  'sainnhe/everforest',
   { 'rose-pine/neovim', name = 'rose-pine'},
   { 'folke/which-key.nvim', config = true },
   { -- File tree
