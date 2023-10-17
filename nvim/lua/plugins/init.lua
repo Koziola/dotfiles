@@ -234,6 +234,10 @@ return {
           disable = { 'lua' },
         },
       })
+
+      require('treesitter-context').setup({
+        max_lines = 10,
+      })
     end,
   },
   { -- Code outline
