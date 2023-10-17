@@ -329,7 +329,6 @@ return {
       extensions = { 'aerial', 'nvim-tree', 'fugitive', 'fzf', 'toggleterm', 'quickfix' },
     },
   },
-  'airblade/vim-gitgutter',
   {
     'mhartington/formatter.nvim',
     config = function() 
