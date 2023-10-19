@@ -238,6 +238,12 @@ return {
       require('treesitter-context').setup({
         max_lines = 10,
       })
+      
+      -- Use treesitter to manage folding code
+      vim.opt.foldmethod = "expr"
+      vim.opt.foldexpr = "nvim_treesitter#foldexpr()"
+      -- Don't fold everything by default when opening a new buffer
+      vim.opt.foldenable = false
     end,
   },
   { -- Code outline
