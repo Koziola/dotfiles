@@ -30,7 +30,7 @@ return {
     config = function(_, opts)
       require('nvim-tree').setup(opts)
       vim.keymap.set('n', '<leader>fT', '<cmd>NvimTreeToggle<CR>', { desc = '[E]xplorer [T]oggle' })
-      vim.keymap.set('n', '<leader>ft', '<cmd>NvimTreeFocus<CR>', { desc = '[E]xplorer [F]ile' })
+      vim.keymap.set('n', '<leader>ft', '<cmd>NvimTreeFindFile<CR>', { desc = '[E]xplorer [F]ile' })
     end,
   },
   { -- Snippets
