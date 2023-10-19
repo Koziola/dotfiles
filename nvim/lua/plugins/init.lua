@@ -222,6 +222,7 @@ return {
     'nvim-treesitter/nvim-treesitter',
     dependencies = {
       'nvim-treesitter/nvim-treesitter-context',
+      'andymass/vim-matchup'
     },
     config = function()
       require('nvim-treesitter.configs').setup({
@@ -233,6 +234,10 @@ return {
           -- Treesitter indentation for lua files has problems
           disable = { 'lua' },
         },
+        -- integration with vim-matchup
+        matchup = {
+          enable = true,
+        }
       })
 
       require('treesitter-context').setup({
