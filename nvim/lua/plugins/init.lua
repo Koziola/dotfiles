@@ -44,11 +44,6 @@ return {
     end,
   },
   {
-    'lukas-reineke/indent-blankline.nvim',
-    main = "ibl",
-    opts = {}
-  },
-  {
     'williamboman/mason.nvim',
     config = function()
       require('mason').setup()
