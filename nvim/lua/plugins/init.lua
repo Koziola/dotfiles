@@ -220,21 +220,38 @@ return {
       'andymass/vim-matchup'
     },
     config = function()
+      local disable_max_size = 1500000
+      local function should_disable(lang, bufnr)
+        local size = vim.fn.getfsize(vim.api.nvim_buf_get_name(bufnr or 0))
+        -- size will be -2 if it doesn't fit into a number
+        if size > disable_max_size or size == -2 then
+          return true
+        end
+        return false
+      end
+
       require('nvim-treesitter.configs').setup({
         -- Add languages here that you want installed for treesitter
         ensure_installed = { 'lua', 'typescript', 'tsx', 'java', 'go', 'ruby', 'bash', 'markdown' },
         highlight = { 
           enable = true,
           additional_vim_regex_highlighting = false,
+          disable = should_disable,
         },
         indent = {
           enable = true,
           -- Treesitter indentation for lua files has problems
-          disable = { 'lua' },
+          disable = function(lang, bufnr)
+            if lang == 'lua' then
+              return true
+            end
+            return should_disable(lang, bufnr)
+          end
         },
         -- integration with vim-matchup
         matchup = {
           enable = true,
+          disable = should_disable,
         }
       })
 
