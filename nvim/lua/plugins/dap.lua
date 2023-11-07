@@ -87,7 +87,12 @@ return {
     end
   },
   {
-    'microsoft/vscode-js-debug',
-    build = 'npm install --legacy-peer-deps && npx gulp vsDebugServerBundle && mv dist out'
-  } 
+    'jay-babu/mason-nvim-dap.nvim',
+    dependencies = { 'mfussenegger/nvim-dap', 'williamboman/mason.nvim' },
+    config = function()
+      require('mason-nvim-dap').setup({
+        ensure_installed = { 'js' },
+      })
+    end
+  }
 }
