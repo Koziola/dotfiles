@@ -14,6 +14,7 @@ vim.opt.rtp:prepend(vim.env.LAZY or lazypath)
 
 local lazy = require('lazy')
 lazy.setup('plugins', {
+  lockfile ='~/dev/dotfiles/lazy-lock.json',
   performance = {
     rtp = {
       disabled_plugins = {
