@@ -6,8 +6,10 @@ return {
       vim.keymap.set('n', '<leader>do', require('dap').step_over, { desc = 'Debug Step Over'})
       vim.keymap.set('n', '<leader>di', require('dap').step_into, { desc = 'Debug Step Into'})
       vim.keymap.set('n', '<leader>du', require('dap').step_out, { desc = 'Debug Step Out'})
-      vim.keymap.set('n', '<leader>B',  require('dap').toggle_breakpoint, { desc = 'Debug Toggle Breakpoint'} )
-    end,
+      vim.keymap.set('n', '<leader>B',  require('dap').toggle_breakpoint, { desc = 'Debug Toggle Breakpoint'})
+      vim.keymap.set('n', '<leader>dt',  require('dap').terminate, { desc = 'Debug Terminate'})
+
+    end
   },
   {
     'rcarriga/nvim-dap-ui',
@@ -41,16 +43,26 @@ return {
     end
   },
   {
-    'mxsdev/nvim-dap-vscode-js',
-    dependencies = {
-      'mfussenegger/nvim-dap',
-      'microsoft/vscode-js-debug'
-    },
-    config = function ()
-      require('dap-vscode-js').setup({
-        debugger_path = vim.fn.stdpath('data') .. '/lazy/vscode-js-debug',
-        adapters = { 'pwa-node' }
+    'jay-babu/mason-nvim-dap.nvim',
+    dependencies = { 'mfussenegger/nvim-dap', 'williamboman/mason.nvim' },
+    config = function()
+      require('mason-nvim-dap').setup({
+        ensure_installed = { 'js' },
       })
+
+      -- alternative to nvim-dap-vscode-js. This configures the adapter explicitly, and uses the DAP adapter
+      -- that's installed by mason / mason-nvim-dap
+      local dap = require('dap')
+      dap.adapters['pwa-node'] = {
+        type = 'server',
+        host = 'localhost',
+        port = '${port}',
+        executable = {
+          command = 'js-debug-adapter',
+          args = { '${port}' },
+        }
+      }
+
       for _, language in ipairs({ 'javascript', 'javascriptreact', 'typescript', 'typescriptreact' }) do
         require('dap').configurations[language] = {
           {
@@ -84,15 +96,6 @@ return {
           }
         }
       end
-    end
-  },
-  {
-    'jay-babu/mason-nvim-dap.nvim',
-    dependencies = { 'mfussenegger/nvim-dap', 'williamboman/mason.nvim' },
-    config = function()
-      require('mason-nvim-dap').setup({
-        ensure_installed = { 'js' },
-      })
     end
   }
 }
