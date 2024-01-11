@@ -16,6 +16,7 @@ return {
   'chriskempson/base16-vim',
   'folke/tokyonight.nvim',
   'morhetz/gruvbox',
+  'rafi/awesome-vim-colorschemes',
   'sainnhe/everforest',
   { 'rose-pine/neovim', name = 'rose-pine'},
   { 'folke/which-key.nvim', config = true },
