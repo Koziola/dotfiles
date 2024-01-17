@@ -36,4 +36,4 @@ require('keybinds')
 
 opt.background = 'dark'
 opt.termguicolors = true
-vim.cmd("colorscheme everforest")
+vim.cmd("colorscheme rose-pine-moon")

@@ -413,14 +413,14 @@ return {
 
       harpoon:setup()
       -- Need to figure out some better keybinds here
-      vim.keymap.set('n', "<C-'>", function() harpoon.ui:toggle_quick_menu(harpoon:list()) end)
-      vim.keymap.set('n', "<leader>H", function() harpoon:list():append() end)
-      vim.keymap.set('n', "<leader>ha", function() harpoon:list():select(1) end)
-      vim.keymap.set('n', "<leader>hs", function() harpoon:list():select(2) end)
-      vim.keymap.set('n', "<leader>hd", function() harpoon:list():select(3) end)
-      vim.keymap.set('n', "<leader>hf", function() harpoon:list():select(4) end)
-      vim.keymap.set("n", "<leader>hn", function() harpoon:list():next() end)
-      vim.keymap.set("n", "<leader>hp", function() harpoon:list():prev() end)
+      vim.keymap.set('n', ";", function() harpoon.ui:toggle_quick_menu(harpoon:list()) end, "Show Harpoons")
+      vim.keymap.set('n', "<leader>H", function() harpoon:list():append() end, "Harpoon Append")
+      vim.keymap.set('n', "<leader>ha", function() harpoon:list():select(1) end, "Harpoon Select 1")
+      vim.keymap.set('n', "<leader>hs", function() harpoon:list():select(2) end, "Harpoon Select 2")
+      vim.keymap.set('n', "<leader>hd", function() harpoon:list():select(3) end, "Harpoon Select 3")
+      vim.keymap.set('n', "<leader>hf", function() harpoon:list():select(4) end, "Harpoon Select 4")
+      vim.keymap.set("n", "<leader>hn", function() harpoon:list():next() end, "Harpoon Next")
+      vim.keymap.set("n", "<leader>hp", function() harpoon:list():prev() end, "Harpoon Prev")
     end
   }
 }
