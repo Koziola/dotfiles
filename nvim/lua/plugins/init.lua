@@ -413,7 +413,7 @@ return {
 
       harpoon:setup()
       -- Need to figure out some better keybinds here
-      vim.keymap.set('n', ";", function() harpoon.ui:toggle_quick_menu(harpoon:list()) end, { desc = "Show Harpoons"})
+      vim.keymap.set('n', "<leader>;", function() harpoon.ui:toggle_quick_menu(harpoon:list()) end, { desc = "Show Harpoons"})
       vim.keymap.set('n', "<leader>H", function() harpoon:list():append() end, { desc = "Harpoon Append"})
       vim.keymap.set('n', "<leader>ha", function() harpoon:list():select(1) end, { desc = "Harpoon Select 1"})
       vim.keymap.set('n', "<leader>hs", function() harpoon:list():select(2) end, { desc = "Harpoon Select 2"})
