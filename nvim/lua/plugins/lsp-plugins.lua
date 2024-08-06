@@ -81,25 +81,43 @@ return {
       })
 
       local capabilities = require("cmp_nvim_lsp").default_capabilities()
-      local servers = { "gopls", "tsserver" }
+      local servers = { "gopls", "eslint" }
       for _, lsp in ipairs(servers) do
-        if lsp == "tsserver" then
-          require("lspconfig")[lsp].setup({
-            capabilities = capabilities,
-            cmd_env = { NODE_OPTIONS = "--max-old-space-size=8192" }, -- Give 8gb of RAM to node
-            init_options = {
-              maxTsServerMemory = "8192",
-              preferences = {
-                importModuleSpecifierPreference = "non-relative",
-              }
-            }
-          })
-        else
-          require("lspconfig")[lsp].setup({
-            capabilities = capabilities,
-          })
-        end
+        require("lspconfig")[lsp].setup({
+          capabilities = capabilities,
+        })
       end
+    end
+  },
+  {
+    "pmizio/typescript-tools.nvim",
+    dependencies = {
+      "nvim-lua/plenary.nvim",
+      "neovim/nvim-lspconfig"
+    },
+    config = function()
+      require("typescript-tools").setup({
+        separate_diagnostic_server = false,
+        tsserver_max_memory = 8 * 1024, -- 8gb
+        jsx_close_tag = {
+          enable = true,
+          filetypes = { "typescriptreact", "javascriptreact" },
+        },
+        tsserver_file_preferences = {
+          importModuleSpecifierPreference = "non-relative",
+          quotePreference = "double",
+          includeCompletionsForImportStatements = true,
+          includeCompletionsForModuleExports = true
+        }
+      })
+    end
+  },
+  {
+    'fatih/vim-go',
+    run = ':GoUpdateBinaries',
+    ft = { 'go' },
+    config = function()
+      vim.g.go_fmt_command = "goimports"
     end
   }
 }
