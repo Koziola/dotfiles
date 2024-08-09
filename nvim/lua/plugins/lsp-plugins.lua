@@ -97,17 +97,17 @@ return {
     },
     config = function()
       require("typescript-tools").setup({
-        separate_diagnostic_server = false,
-        tsserver_max_memory = 8 * 1024, -- 8gb
-        jsx_close_tag = {
-          enable = true,
-          filetypes = { "typescriptreact", "javascriptreact" },
-        },
-        tsserver_file_preferences = {
-          importModuleSpecifierPreference = "non-relative",
-          quotePreference = "double",
-          includeCompletionsForImportStatements = true,
-          includeCompletionsForModuleExports = true
+        settings = {
+          separate_diagnostic_server = false,
+          tsserver_max_memory = 8 * 1024, -- 8gb
+          jsx_close_tag = {
+            enable = true,
+            filetypes = { "typescriptreact", "javascriptreact" },
+          },
+          tsserver_file_preferences = {
+            importModuleSpecifierPreference = "non-relative",
+            quotePreference = "double"
+          }
         }
       })
     end
