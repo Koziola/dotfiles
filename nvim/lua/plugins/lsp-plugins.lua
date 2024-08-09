@@ -67,10 +67,11 @@ return {
             })
             vim.api.nvim_create_autocmd("BufWritePre", {
               callback = function()
+                vim.cmd("EslintFixAll")
                 vim.lsp.buf.format({
                   timeout_ms = 500,
-                  -- ignore tsserver formatting. Should use prettier or eslint instead.
-                  filter = function(client) return client.name ~= "tsserver" end
+                  -- ignore tsserver / typescript-tools formatting. Should use prettier or eslint instead.
+                  filter = function(client) return client.name ~= "typescript-tools" end
                 })
               end,
               group = autoformat_group,
