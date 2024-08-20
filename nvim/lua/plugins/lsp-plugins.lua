@@ -67,7 +67,6 @@ return {
             })
             vim.api.nvim_create_autocmd("BufWritePre", {
               callback = function()
-                vim.cmd("EslintFixAll")
                 vim.lsp.buf.format({
                   timeout_ms = 500,
                   -- ignore tsserver / typescript-tools formatting. Should use prettier or eslint instead.
@@ -82,11 +81,26 @@ return {
       })
 
       local capabilities = require("cmp_nvim_lsp").default_capabilities()
-      local servers = { "gopls", "eslint" }
+      local servers = { "gopls", "eslint", "stylelint_lsp" }
       for _, lsp in ipairs(servers) do
-        require("lspconfig")[lsp].setup({
-          capabilities = capabilities,
-        })
+        if lsp == "eslint" then
+          require("lspconfig")[lsp].setup({
+            capabilities = capabilities,
+            codeActionOnSave = {
+              enable = true,
+              mode = "problems"
+            }
+          })
+        elseif lsp == "stylelint_lsp" then
+          require("lspconfig")[lsp].setup({
+            capabilities = capabilities,
+            filetypes = { "css", "scss", "less" },
+          })
+        else
+          require("lspconfig")[lsp].setup({
+            capabilities = capabilities,
+          })
+        end
       end
     end
   },
@@ -112,6 +126,11 @@ return {
         }
       })
     end
+  },
+  {
+    -- CSS linting
+    -- Configured above in lspconfig
+    "bmatcuk/stylelint-lsp",
   },
   {
     'fatih/vim-go',
