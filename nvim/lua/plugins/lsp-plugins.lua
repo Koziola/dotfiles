@@ -13,6 +13,9 @@ return {
       },
     },
     config = function()
+      -- Turn off most logging because it's super noisy
+      vim.lsp.set_log_level("error")
+
       local lsp_group = vim.api.nvim_create_augroup("KickstartLSP", {})
       -- Customize the UI of floating windows
       vim.lsp.handlers["textDocument/hover"] = vim.lsp.with(vim.lsp.handlers.hover, { border = "rounded" })
