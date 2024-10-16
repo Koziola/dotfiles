@@ -45,6 +45,12 @@ return {
     end,
   },
   {
+    'm4xshen/autoclose.nvim',
+    config = function()
+      require('autoclose').setup()
+    end,
+  },
+  {
     'williamboman/mason.nvim',
     config = function()
       require('mason').setup()
@@ -213,6 +219,17 @@ return {
         }
       })
     end,
+  },
+  {
+    'andymass/vim-matchup',
+    config = function()
+      -- deferred highlighting
+      vim.g.matchup_matchparen_deferred = 1
+      -- More conservative timeouts
+      vim.g.matchup_matchparen_timeout = 200
+      vim.g.matchup_matchparen_insert_timeout = 30
+      vim.g.matchup_matchparen_stopline = 300
+    end
   },
   { -- Highlight, edit, and navigate code
     'nvim-treesitter/nvim-treesitter',
