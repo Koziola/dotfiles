@@ -34,6 +34,6 @@ vim.g.maplocalleader = " "
 require('deps-lazy')
 require('keybinds')
 
-opt.background = 'dark'
+opt.background = 'light'
 opt.termguicolors = true
-vim.cmd("colorscheme rose-pine-moon")
+vim.cmd("colorscheme everforest")
