@@ -83,7 +83,13 @@ return {
         end,
       })
 
-      local capabilities = require("cmp_nvim_lsp").default_capabilities()
+      local capabilities = vim.tbl_deep_extend("force",
+        vim.lsp.protocol.make_client_capabilities(),
+        require('cmp_nvim_lsp').default_capabilities()
+      )
+      -- There are performance issues with the file watcher, so disable it for now.
+      capabilities.workspace.didChangeConfiguration.dynamicRegistration = false
+
       local servers = { "gopls", "eslint", "stylelint_lsp" }
       for _, lsp in ipairs(servers) do
         if lsp == "eslint" then
