@@ -1,0 +1,13 @@
+import = [
+    "~/.config/alacritty/themes/themes/ashes_light.toml",
+]
+
+[font]
+normal = { family = "ComicShannsMono Nerd Font", style = "Regular" }
+size = 16
+
+[keyboard]
+bindings = [
+  { key = "Right", mods = "Alt", chars = "\u001BF" },
+  { key = "Left",  mods = "Alt", chars = "\u001BB" },
+]

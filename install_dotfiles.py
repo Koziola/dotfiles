@@ -2,6 +2,7 @@ import os
 import pathlib
 
 NVIM_DIR = os.path.join(os.path.expanduser("~"), ".config/nvim")
+ALACRITTY_DIR = os.path.join(os.path.expanduser("~"), ".config/alacritty")
 NVIM = "nvim"
 
 def create_dir_if_not_exists(d):
@@ -32,6 +33,7 @@ def install_directory(directory, dst_root):
     
 def main():
     create_dir_if_not_exists(NVIM_DIR)
+    create_dir_if_not_exists(ALACRITTY_DIR)
 
     current_dir = pathlib.Path(__file__).parent.resolve()
     nvim_dotfiles_dir = current_dir.joinpath(NVIM)
@@ -39,6 +41,9 @@ def main():
     install_directory(nvim_dotfiles_dir, NVIM_DIR)
 
     symlink_if_not_exists(current_dir.joinpath(".tmux.conf"), os.path.join(os.path.expanduser("~"), ".tmux.conf"))
+    symlink_if_not_exists(current_dir.joinpath(".yabairc"), os.path.join(os.path.expanduser("~"), ".yabairc"))
+    symlink_if_not_exists(current_dir.joinpath(".skhdrc"), os.path.join(os.path.expanduser("~"), ".skhdrc"))
+    symlink_if_not_exists(current_dir.joinpath("alacritty.toml"), os.path.join(os.path.expanduser("~"), ".config", "alacritty", "alacritty.toml"))
     print("Complete!")
 
 if __name__ == "__main__":
