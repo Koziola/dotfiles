@@ -27,6 +27,11 @@ return {
         -- The git integration leads to performance problems
         enable = false,
       },
+      filesystem_watchers = {
+        ignore_dirs = {
+          "node_modules",
+        },
+      },
     },
     config = function(_, opts)
       require('nvim-tree').setup(opts)
@@ -275,10 +280,10 @@ return {
       })
       
       -- Use treesitter to manage folding code
-      vim.opt.foldmethod = "expr"
-      vim.opt.foldexpr = "nvim_treesitter#foldexpr()"
+      -- vim.opt.foldmethod = "expr"
+      -- vim.opt.foldexpr = "nvim_treesitter#foldexpr()"
       -- Don't fold everything by default when opening a new buffer
-      vim.opt.foldenable = false
+      -- vim.opt.foldenable = false
     end,
   },
   { -- Code outline
