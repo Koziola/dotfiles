@@ -11,6 +11,7 @@ return {
           window = { relative = "editor" },
         },
       },
+      "lukas-reineke/lsp-format.nvim"
     },
     config = function()
       -- Turn off most logging because it's super noisy
@@ -23,7 +24,6 @@ return {
         vim.lsp.with(vim.lsp.handlers.signature_help, { border = "rounded" })
 
       --  This gets run when a LSP client connects to a particular buffer
-      local autoformat_group = vim.api.nvim_create_augroup("LspAutoformat", { clear = true })
       vim.api.nvim_create_autocmd("LspAttach", {
         desc = "Set custom keymaps and create autocmds",
         pattern = "*",
@@ -56,30 +56,6 @@ return {
           vim.keymap.set("n", "[d", vim.diagnostic.goto_prev, { desc = "Previous diagnostic" })
           vim.keymap.set("n", "]d", vim.diagnostic.goto_next, { desc = "Next diagnostic" })
           vim.keymap.set("n", "<leader>dl", vim.diagnostic.setloclist, { desc = "[D]iagnostics set [L]oclist" })
-
-          -- Format on save for these filetypes
-          local autoformat_filetypes = { "ruby", "lua", "typescript", "typescriptreact" }
-          if
-            client.server_capabilities.documentFormattingProvider
-            and vim.tbl_contains(autoformat_filetypes, vim.bo[args.buf].filetype)
-          then
-            -- Remove prior autocmds so this only triggers once
-            vim.api.nvim_clear_autocmds({
-              group = autoformat_group,
-              buffer = args.buf,
-            })
-            vim.api.nvim_create_autocmd("BufWritePre", {
-              callback = function()
-                vim.lsp.buf.format({
-                  timeout_ms = 500,
-                  -- ignore tsserver / typescript-tools formatting. Should use prettier or eslint instead.
-                  filter = function(client) return client.name ~= "typescript-tools" end
-                })
-              end,
-              group = autoformat_group,
-              buffer = args.buf,
-            })
-          end
         end,
       })
 
@@ -90,6 +66,8 @@ return {
       -- There are performance issues with the file watcher, so disable it for now.
       capabilities.workspace.didChangeConfiguration.dynamicRegistration = false
 
+      local on_attach_format = require("lsp-format").on_attach
+
       local servers = { "gopls", "eslint", "stylelint_lsp" }
       for _, lsp in ipairs(servers) do
         if lsp == "eslint" then
@@ -98,7 +76,7 @@ return {
             codeActionOnSave = {
               enable = true,
               mode = "problems"
-            }
+            },
           })
         elseif lsp == "stylelint_lsp" then
           require("lspconfig")[lsp].setup({
@@ -108,6 +86,7 @@ return {
         else
           require("lspconfig")[lsp].setup({
             capabilities = capabilities,
+            on_attach = on_attach_format
           })
         end
       end
