@@ -1,11 +1,8 @@
---require('deps')
-
 local opt = vim.opt
 opt.number = true
 opt.rnu = true
 opt.relativenumber = true
 opt.hidden = true
--- opt.guicursor = true
 
 opt.softtabstop = 4
 opt.shiftwidth = 4

@@ -39,12 +39,6 @@ return {
       vim.keymap.set('n', '<leader>ft', '<cmd>NvimTreeFindFile<CR>', { desc = '[E]xplorer [F]ile' })
     end,
   },
-  { -- Snippets
-    'L3MON4D3/LuaSnip',
-    config = function()
-      require('luasnip.loaders.from_vscode').lazy_load()
-    end,
-  },
   {
     'm4xshen/autoclose.nvim',
     config = function()
@@ -139,13 +133,11 @@ return {
       'hrsh7th/cmp-path',
       'saadparwaiz1/cmp_luasnip',
       'onsails/lspkind-nvim',
-      'L3MON4D3/LuaSnip',
       'kyazdani42/nvim-web-devicons',
     },
     event = 'InsertEnter *',
     config = function()
       local cmp = require('cmp')
-      local luasnip = require('luasnip')
       local lspkind = require('lspkind')
       lspkind.init({
         preset = 'codicons'
@@ -154,11 +146,6 @@ return {
       cmp.setup({
         formatting = {
           format = lspkind.cmp_format({ mode = 'symbol_text' }),
-        },
-        snippet = {
-          expand = function(args)
-            luasnip.lsp_expand(args.body)
-          end,
         },
         mapping = cmp.mapping.preset.insert({
           ['<C-d>'] = cmp.mapping.scroll_docs(-4),
@@ -169,18 +156,14 @@ return {
             select = true,
           }),
           ['<Tab>'] = cmp.mapping(function(fallback)
-            if luasnip.expand_or_jumpable() then
-              luasnip.expand_or_jump()
-            elseif cmp.visible() then
+            if cmp.visible() then
               cmp.select_next_item()
             else
               fallback()
             end
           end, { 'i', 's' }),
           ['<S-Tab>'] = cmp.mapping(function(fallback)
-            if luasnip.jumpable(-1) then
-              luasnip.jump(-1)
-            elseif cmp.visible() then
+            if cmp.visible() then
               cmp.select_prev_item()
             else
               fallback()
@@ -189,7 +172,6 @@ return {
         }),
         sources = {
           { name = 'nvim_lsp' },
-          -- { name = 'luasnip' },
           { name = 'path' },
           { name = 'nvim_lsp_signature_help' }
         },
@@ -221,17 +203,6 @@ return {
         }
       })
     end,
-  },
-  {
-    'andymass/vim-matchup',
-    config = function()
-      -- deferred highlighting
-      vim.g.matchup_matchparen_deferred = 1
-      -- More conservative timeouts
-      vim.g.matchup_matchparen_timeout = 200
-      vim.g.matchup_matchparen_insert_timeout = 30
-      vim.g.matchup_matchparen_stopline = 300
-    end
   },
   { -- Highlight, edit, and navigate code
     'nvim-treesitter/nvim-treesitter',
@@ -377,54 +348,6 @@ return {
       },
       extensions = { 'aerial', 'nvim-tree', 'fugitive', 'fzf', 'toggleterm', 'quickfix' },
     },
-  },
-  {
-    'mhartington/formatter.nvim',
-    config = function() 
-      local prettierd = function()
-        return {
-          exe = "prettierd",
-          args = {vim.api.nvim_buf_get_name(0)},
-          stdin = true
-        }
-      end
-
-      require('formatter').setup({
-        logging = false,
-        filetype = {
-          javascript = {prettierd},
-          typescript = {prettierd},
-          typescriptreact = {prettierd},
-          javascriptreact = {prettierd},
-          json = {prettierd},
-          html = {prettierd},
-          css = {prettierd},
-          scss = {prettierd},
-          markdown = {prettierd},
-          lua = {
-            function()
-              return {
-                exe = "stylua",
-                args = {
-                  "--config-path",
-                  vim.fn.expand("~/.config/stylua.toml"),
-                  "-",
-                },
-                stdin = true,
-              }
-            end
-          },
-        }
-      })
-
-      -- set keybind
-      vim.keymap.set('n', '<leader>F', '<cmd>Format<CR>', { desc = '[F]ormat' })
-      local format_group = vim.api.nvim_create_augroup("Format", { clear = true })
-      vim.api.nvim_create_autocmd("BufWritePost", {
-        command = "FormatWrite",
-        group = format_group,
-      })
-    end
   },
   { 
     "ThePrimeagen/harpoon",
