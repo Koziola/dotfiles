@@ -20,25 +20,6 @@ return {
   'sainnhe/everforest',
   { 'rose-pine/neovim', name = 'rose-pine'},
   { 'folke/which-key.nvim', config = true },
-  { -- File tree
-    'kyazdani42/nvim-tree.lua',
-    opts = {
-      git = {
-        -- The git integration leads to performance problems
-        enable = false,
-      },
-      filesystem_watchers = {
-        ignore_dirs = {
-          "node_modules",
-        },
-      },
-    },
-    config = function(_, opts)
-      require('nvim-tree').setup(opts)
-      vim.keymap.set('n', '<leader>fT', '<cmd>NvimTreeToggle<CR>', { desc = '[E]xplorer [T]oggle' })
-      vim.keymap.set('n', '<leader>ft', '<cmd>NvimTreeFindFile<CR>', { desc = '[E]xplorer [F]ile' })
-    end,
-  },
   {
     'm4xshen/autoclose.nvim',
     config = function()
@@ -50,6 +31,19 @@ return {
     config = function()
       require('mason').setup()
     end,
+  },
+  {
+    'tpope/vim-vinegar'
+  },
+  {
+    'stevearc/oil.nvim',
+    config = function()
+      require('oil').setup({
+        view_options = {
+          show_hidden = true,
+        }
+      })
+    end
   },
   {
     'nvim-neotest/neotest',
@@ -359,7 +353,7 @@ return {
       harpoon:setup()
       -- Need to figure out some better keybinds here
       vim.keymap.set('n', "<leader>;", function() harpoon.ui:toggle_quick_menu(harpoon:list()) end, { desc = "Show Harpoons"})
-      vim.keymap.set('n', "<leader>H", function() harpoon:list():append() end, { desc = "Harpoon Append"})
+      vim.keymap.set('n', "<leader>H", function() harpoon:list():add() end, { desc = "Harpoon Add"})
       vim.keymap.set('n', "<leader>ha", function() harpoon:list():select(1) end, { desc = "Harpoon Select 1"})
       vim.keymap.set('n', "<leader>hs", function() harpoon:list():select(2) end, { desc = "Harpoon Select 2"})
       vim.keymap.set('n', "<leader>hd", function() harpoon:list():select(3) end, { desc = "Harpoon Select 3"})
