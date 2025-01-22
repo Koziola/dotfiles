@@ -50,6 +50,8 @@ return {
     dependencies = {
       'haydenmeade/neotest-jest',
       'nvim-lua/plenary.nvim',
+      'fredrikaverpil/neotest-golang',
+      { url = "git@git.corp.stripe.com:stevearc/neotest-pay-test.git" },
     },
     config = function()
       local neotest_jest = require('neotest-jest')
@@ -58,7 +60,11 @@ return {
         adapters = {
           neotest_jest({
             cwd = neotest_jest.root,
-          })
+          }),
+          require('neotest-golang')({
+            go_test_args = { '-v', '-count=1', '-timeout=30s' }
+          }),
+          require("neotest-pay-test")(),
         },
         discovery = {
           enabled = false,
@@ -77,7 +83,7 @@ return {
           open_on_run = false,
         },
         quickfix = {
-          open = false,
+          enabled = false,
         },
       })
       vim.keymap.set('n', '<leader>tf', function()
@@ -202,7 +208,6 @@ return {
     'nvim-treesitter/nvim-treesitter',
     dependencies = {
       'nvim-treesitter/nvim-treesitter-context',
-      'andymass/vim-matchup'
     },
     config = function()
       local disable_max_size = 1500000
@@ -232,11 +237,6 @@ return {
             end
             return should_disable(lang, bufnr)
           end
-        },
-        -- integration with vim-matchup
-        matchup = {
-          enable = true,
-          disable = should_disable,
         }
       })
 

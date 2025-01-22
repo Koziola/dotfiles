@@ -11,7 +11,8 @@ return {
           window = { relative = "editor" },
         },
       },
-      "lukas-reineke/lsp-format.nvim"
+      -- CSS linting
+      "bmatcuk/stylelint-lsp"
     },
     config = function()
       -- Turn off most logging because it's super noisy
@@ -66,7 +67,6 @@ return {
       -- There are performance issues with the file watcher, so disable it for now.
       capabilities.workspace.didChangeConfiguration.dynamicRegistration = false
 
-      local on_attach_format = require("lsp-format").on_attach
 
       local servers = { "gopls", "eslint", "stylelint_lsp" }
       for _, lsp in ipairs(servers) do
@@ -83,10 +83,52 @@ return {
             capabilities = capabilities,
             filetypes = { "css", "scss", "less" },
           })
+        elseif lsp == "gopls" then
+          require("lspconfig")[lsp].setup({
+            capabilities = capabilities,
+            settings = {
+              gopls = {
+                analyses = {
+                  unusedparams = true,
+                  shadow = true,
+                  fillreturns = true,
+                  nonewvars = true,
+                  unusedwrite = true,
+                  staticcheck = true,
+                  structure = true,
+                  unparam = true,
+                  unusedresult = true,
+                  deadcode = true,
+                  nilness = true,
+                  typeparams = true,
+                },
+                directoryFilters = {
+                  "-bazel-bin",
+                  "-bazel-gocode",
+                  "-bazel-out",
+                  "-bazel-testlogs",
+                  "-vendor/github.com/containernetworking/plugins/pkg/ns",
+                  "-vendor/github.com/bsm/go-sparkey",
+                  "-puppet-config",
+                },
+                usePlaceholders = true,
+                ['local'] = "git%.corp%.stripe%.com/stripe%-internal/gocode",
+                semanticTokens = true,
+                codelenses = {
+                  gc_details = false,
+                  regenerate_cgo = false,
+                  generate = false,
+                  test = false,
+                  tidy = false,
+                  upgrade_dependency = false,
+                  vendor = false,
+                },
+              }
+            }
+          })
         else
           require("lspconfig")[lsp].setup({
             capabilities = capabilities,
-            on_attach = on_attach_format
           })
         end
       end
@@ -116,16 +158,39 @@ return {
     end
   },
   {
-    -- CSS linting
-    -- Configured above in lspconfig
-    "bmatcuk/stylelint-lsp",
-  },
-  {
-    'fatih/vim-go',
-    run = ':GoUpdateBinaries',
-    ft = { 'go' },
+    "stevearc/conform.nvim",
+    dependencies = {
+      { url = "git@git.corp.stripe.com:stevearc/nvim-stripe-configs" },
+    },
     config = function()
-      vim.g.go_fmt_command = "goimports"
+      require("conform").setup({
+        formatters_by_ft = {
+            javascript = { "prettierd" },
+            typescript = { "prettierd" },
+            javascriptreact = { "prettierd" },
+            typescriptreact = { "prettierd" },
+            html = { "prettierd" },
+            json = { "prettierd" },
+            jsonc = { "prettierd" },
+            graphql = { "prettierd" },
+            go = { "goimports", "gofmt" },
+            lua = { "stylua" },
+            sql = { "zoolander_format_sql" },
+            bzl = { "zoolander_format_build" },
+            java = { "zoolander_format_java" },
+            scala = { "zoolander_format_scala" },
+            terraform = { "sc_terraform" },
+          },
+        formatters = {
+          goimports = {
+            cmd = vim.env.HOME .. "/stripe/gocode/bin/goimports",
+          },
+        },
+        format_after_save =  { 
+          lsp_format = "fallback",
+          async = true
+        },
+      })
     end
   }
 }
