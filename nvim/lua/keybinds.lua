@@ -17,8 +17,9 @@ nmap('<leader>bb', ':buffers<CR>')
 nmap('<leader>ev', ':e ~/.config/nvim/init.lua<CR>')
 
 -- Tab navigation
-nmap('<C-j>', 'gt')
-nmap('<C-k>', 'gT')
+nmap('<C-h>', 'gt')
+nmap('<C-j>', 'gT')
+nmap('<C-t>', ':tabclose')
 
 -- Lsp Stuff
 --nmap('gd', ':lua vim.lsp.buf.definition()<CR>')
