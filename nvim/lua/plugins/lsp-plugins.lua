@@ -5,10 +5,10 @@ return {
       "hrsh7th/cmp-nvim-lsp",
       {
         "j-hui/fidget.nvim",
-        tag = "legacy",
         opts = {
           text = { spinner = "dots" },
-          window = { relative = "editor" },
+          -- window = { relative = "editor" },
+          lsp = { log_handler = "true"}
         },
       },
       -- CSS linting
@@ -86,6 +86,7 @@ return {
         elseif lsp == "gopls" then
           require("lspconfig")[lsp].setup({
             capabilities = capabilities,
+            cmd = { "gopls", "--remote=auto" },
             settings = {
               gopls = {
                 analyses = {
@@ -135,6 +136,21 @@ return {
     end
   },
   {
+    "ray-x/go.nvim",
+    config = function()
+      local capabilities = vim.tbl_deep_extend("force",
+        vim.lsp.protocol.make_client_capabilities(),
+        require('cmp_nvim_lsp').default_capabilities()
+      )
+
+      require("go").setup({
+        lsp_cfg = {
+          capabilities = capabilities,
+        }
+      })
+    end
+  },
+  {
     "pmizio/typescript-tools.nvim",
     dependencies = {
       "nvim-lua/plenary.nvim",
@@ -170,7 +186,7 @@ return {
             javascriptreact = { "prettierd" },
             typescriptreact = { "prettierd" },
             html = { "prettierd" },
-            json = { "prettierd" },
+            -- json = { "prettierd" },
             jsonc = { "prettierd" },
             graphql = { "prettierd" },
             go = { "goimports", "gofmt" },
