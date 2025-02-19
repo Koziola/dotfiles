@@ -65,7 +65,9 @@ return {
         require('cmp_nvim_lsp').default_capabilities()
       )
       -- There are performance issues with the file watcher, so disable it for now.
-      capabilities.workspace.didChangeConfiguration.dynamicRegistration = false
+      if capabilities.workspace and capabilities.workspace.didChangeWatchedFiles then
+        capabilities.workspace.didChangeWatchedFiles.dynamicRegistration = false
+      end
 
 
       local servers = { "gopls", "eslint", "stylelint_lsp" }
