@@ -18,6 +18,7 @@ return {
   'morhetz/gruvbox',
   'rafi/awesome-vim-colorschemes',
   'sainnhe/everforest',
+  { "EdenEast/nightfox.nvim" },
   { 'rose-pine/neovim', name = 'rose-pine'},
   { 'folke/which-key.nvim', config = true },
   {
