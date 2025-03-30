@@ -20,9 +20,9 @@ opt.backspace= {'indent', 'eol', 'start'}
 
 opt.showmatch = true
 
+opt.completeopt = {'menu', 'fuzzy', 'noselect'}
 
 opt.swapfile = false
-
 
 -- vim.cmd('nnoremap <SPACE> <nop>')
 vim.g.mapleader = " "

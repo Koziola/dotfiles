@@ -2,7 +2,6 @@ return {
   {
     'neovim/nvim-lspconfig',
     dependencies = {
-      "hrsh7th/cmp-nvim-lsp",
       {
         "j-hui/fidget.nvim",
         opts = {
@@ -31,6 +30,12 @@ return {
         group = lsp_group,
         callback = function(args)
           local client = vim.lsp.get_client_by_id(args.data.client_id)
+
+          -- nvim default LSP completion (as of 0.11)
+          if client:supports_method('textDocument/completion') then
+            vim.lsp.completion.enable(true, client.id, args.buf, { autotrigger = true })
+          end
+
           -- helper function for setting up buffer-local keymaps
           local nmap = function(keys, func, desc)
             vim.keymap.set("n", keys, func, { buffer = args.buf, desc = "LSP: " .. desc })
@@ -57,13 +62,14 @@ return {
           vim.keymap.set("n", "[d", vim.diagnostic.goto_prev, { desc = "Previous diagnostic" })
           vim.keymap.set("n", "]d", vim.diagnostic.goto_next, { desc = "Next diagnostic" })
           vim.keymap.set("n", "<leader>dl", vim.diagnostic.setloclist, { desc = "[D]iagnostics set [L]oclist" })
+          vim.keymap.set("i", "<c-space>", function () vim.lsp.completion.get() end)
+          -- Remap Ctrl-Y to Enter for accepting completion
+          vim.keymap.set('i', '<CR>', 'pumvisible() ? "<C-y>" : "<CR>"', {expr = true, noremap = true})
         end,
       })
 
-      local capabilities = vim.tbl_deep_extend("force",
-        vim.lsp.protocol.make_client_capabilities(),
-        require('cmp_nvim_lsp').default_capabilities()
-      )
+      local capabilities = vim.lsp.protocol.make_client_capabilities()
+      
       -- There are performance issues with the file watcher, so disable it for now.
       if capabilities.workspace and capabilities.workspace.didChangeWatchedFiles then
         capabilities.workspace.didChangeWatchedFiles.dynamicRegistration = false
@@ -71,24 +77,30 @@ return {
 
 
       local servers = { "gopls", "eslint", "stylelint_lsp" }
+
+      -- as of 0.11
+      local config = vim.lsp.config
+
       for _, lsp in ipairs(servers) do
         if lsp == "eslint" then
-          require("lspconfig")[lsp].setup({
+          config.eslint = {
             capabilities = capabilities,
             codeActionOnSave = {
               enable = true,
               mode = "problems"
             },
-          })
+          }
+          vim.lsp.enable("eslint")
         elseif lsp == "stylelint_lsp" then
-          require("lspconfig")[lsp].setup({
+          config.stylelint_lsp = {
             capabilities = capabilities,
             filetypes = { "css", "scss", "less" },
-          })
+          }
+          vim.lsp.enable("stylelint_lsp")
         elseif lsp == "gopls" then
-          require("lspconfig")[lsp].setup({
+          config.gopls = {
             capabilities = capabilities,
-            cmd = { "gopls", "--remote=auto" },
+            cmd = { "gopls", "-remote=auto" },
             settings = {
               gopls = {
                 analyses = {
@@ -128,11 +140,13 @@ return {
                 },
               }
             }
-          })
+          }
+          vim.lsp.enable("gopls")
         else
-          require("lspconfig")[lsp].setup({
+          config[lsp].setup({
             capabilities = capabilities,
           })
+          vim.lsp.enable(lsp)
         end
       end
     end
@@ -140,16 +154,7 @@ return {
   {
     "ray-x/go.nvim",
     config = function()
-      local capabilities = vim.tbl_deep_extend("force",
-        vim.lsp.protocol.make_client_capabilities(),
-        require('cmp_nvim_lsp').default_capabilities()
-      )
-
-      require("go").setup({
-        lsp_cfg = {
-          capabilities = capabilities,
-        }
-      })
+      require("go").setup({})
     end
   },
   {
