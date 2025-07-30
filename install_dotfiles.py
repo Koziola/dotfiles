@@ -44,6 +44,7 @@ def main():
     symlink_if_not_exists(current_dir.joinpath(".yabairc"), os.path.join(os.path.expanduser("~"), ".yabairc"))
     symlink_if_not_exists(current_dir.joinpath(".skhdrc"), os.path.join(os.path.expanduser("~"), ".skhdrc"))
     symlink_if_not_exists(current_dir.joinpath("alacritty.toml"), os.path.join(os.path.expanduser("~"), ".config", "alacritty", "alacritty.toml"))
+    symlink_if_not_exists(current_dir.joinpath("hammerspoon/init.lua"), os.path.join(os.path.expanduser("~"), ".hammerspoon", "init.lua"))
     print("Complete!")
 
 if __name__ == "__main__":
