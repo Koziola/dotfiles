@@ -3,6 +3,7 @@ import pathlib
 
 NVIM_DIR = os.path.join(os.path.expanduser("~"), ".config/nvim")
 ALACRITTY_DIR = os.path.join(os.path.expanduser("~"), ".config/alacritty")
+HAMMERSPOON_DIR = os.path.join(os.path.expanduser("~"), ".hammerspoon")
 NVIM = "nvim"
 
 def create_dir_if_not_exists(d):
@@ -34,6 +35,7 @@ def install_directory(directory, dst_root):
 def main():
     create_dir_if_not_exists(NVIM_DIR)
     create_dir_if_not_exists(ALACRITTY_DIR)
+    create_dir_if_not_exists(HAMMERSPOON_DIR)
 
     current_dir = pathlib.Path(__file__).parent.resolve()
     nvim_dotfiles_dir = current_dir.joinpath(NVIM)
