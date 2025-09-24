@@ -13,7 +13,6 @@ return {
       require('Comment').setup()
     end
   },
-  'chriskempson/base16-vim',
   'folke/tokyonight.nvim',
   'morhetz/gruvbox',
   'rafi/awesome-vim-colorschemes',
