@@ -43,8 +43,10 @@ return {
 
           nmap("<leader>r", vim.lsp.buf.rename, "[R]ename")
           nmap("<leader>ca", vim.lsp.buf.code_action, "[C]ode [A]ction")
-
-          nmap("gd", vim.lsp.buf.definition, "[G]oto [D]efinition")
+          nmap("gd", function()
+            vim.lsp.buf.definition()
+            vim.api.nvim_command("normal! zz")
+          end, "[G]oto [D]efinition")
           nmap("gi", vim.lsp.buf.implementation, "[G]oto [I]mplementation")
           nmap("gr", function() require("telescope.builtin").lsp_references({fname_width = 100, show_line = false}) end, "[G]oto [R]eferences")
           nmap("gD", vim.lsp.buf.declaration, "[G]oto [D]eclaration")
