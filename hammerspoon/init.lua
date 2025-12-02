@@ -10,7 +10,7 @@ windowMappings = {}
 function setWindowHotkey(hotkey)
     -- Get the focused window
     local focusedWindow = hs.window.focusedWindow()
-    
+
     -- Check if a window is focused
     if focusedWindow then
         local appName = focusedWindow:application():name()
@@ -18,7 +18,7 @@ function setWindowHotkey(hotkey)
         windowMappings[hotkey] = {appName = appName, windowId = windowId}
         hs.alert.show("Set " .. hotkey .. " for " .. appName .. " (Window ID: " .. windowId .. ")")
     else
-        hs.alert.show("No focused window to map.")
+        hs.alert.show("No focused window to map. Verify hammerspoon accessibility is turned on in System Settings > Privacy & Security > Accessibility.")
     end
 end
 
