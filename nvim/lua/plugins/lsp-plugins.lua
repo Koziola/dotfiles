@@ -31,10 +31,7 @@ return {
         callback = function(args)
           local client = vim.lsp.get_client_by_id(args.data.client_id)
 
-          -- nvim default LSP completion (as of 0.11)
-          if client:supports_method('textDocument/completion') then
-            vim.lsp.completion.enable(true, client.id, args.buf, { autotrigger = true })
-          end
+          -- LSP completion is handled by nvim-cmp
 
           -- helper function for setting up buffer-local keymaps
           local nmap = function(keys, func, desc)
@@ -64,12 +61,13 @@ return {
           vim.keymap.set("n", "[d", vim.diagnostic.goto_prev, { desc = "Previous diagnostic" })
           vim.keymap.set("n", "]d", vim.diagnostic.goto_next, { desc = "Next diagnostic" })
           vim.keymap.set("n", "<leader>dl", vim.diagnostic.setloclist, { desc = "[D]iagnostics set [L]oclist" })
-          vim.keymap.set("i", "<c-space>", function () vim.lsp.completion.get() end)
         end,
       })
 
+      -- Setup capabilities for nvim-cmp
       local capabilities = vim.lsp.protocol.make_client_capabilities()
-      
+      capabilities = require('cmp_nvim_lsp').default_capabilities(capabilities)
+
       -- There are performance issues with the file watcher, so disable it for now.
       if capabilities.workspace and capabilities.workspace.didChangeWatchedFiles then
         capabilities.workspace.didChangeWatchedFiles.dynamicRegistration = false
