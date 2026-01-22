@@ -21,9 +21,19 @@ return {
   { 'rose-pine/neovim', name = 'rose-pine'},
   { 'folke/which-key.nvim', config = true },
   {
-    'm4xshen/autoclose.nvim',
+    'windwp/nvim-autopairs',
     config = function()
-      require('autoclose').setup()
+      local npairs = require('nvim-autopairs')
+      npairs.setup({
+        check_ts = true,
+        ts_config = {
+          lua = {'string'},
+          javascript = {'template_string'},
+          java = false,
+        },
+        enable_check_bracket_line = true,
+        map_cr = true,
+      })
     end,
   },
   {

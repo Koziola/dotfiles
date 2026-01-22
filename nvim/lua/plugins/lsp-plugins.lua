@@ -65,8 +65,6 @@ return {
           vim.keymap.set("n", "]d", vim.diagnostic.goto_next, { desc = "Next diagnostic" })
           vim.keymap.set("n", "<leader>dl", vim.diagnostic.setloclist, { desc = "[D]iagnostics set [L]oclist" })
           vim.keymap.set("i", "<c-space>", function () vim.lsp.completion.get() end)
-          -- Remap Ctrl-Y to Enter for accepting completion
-          vim.keymap.set('i', '<CR>', 'pumvisible() ? "<C-y>" : "<CR>"', {expr = true, noremap = true})
         end,
       })
 
