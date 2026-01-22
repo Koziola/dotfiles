@@ -203,7 +203,6 @@ return {
             java = { "zoolander_format_java" },
             scala = { "zoolander_format_scala" },
             terraform = { "sc_terraform" },
-            yaml = { "yamlfmt" },
           },
         formatters = {
           goimports = {
