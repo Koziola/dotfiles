@@ -32,8 +32,30 @@ return {
           java = false,
         },
         enable_check_bracket_line = true,
-        map_cr = true,
+        map_cr = false,
+        map_bs = true,
       })
+
+      -- Global CR handler that integrates LSP completion + autopairs
+      _G.custom_cr = function()
+        if vim.fn.pumvisible() ~= 0 then
+          local info = vim.fn.complete_info({ 'selected' })
+          if info.selected ~= -1 then
+            return vim.api.nvim_replace_termcodes('<C-y>', true, false, true)
+          else
+            return vim.api.nvim_replace_termcodes('<C-e>', true, false, true) .. npairs.autopairs_cr()
+          end
+        else
+          return npairs.autopairs_cr()
+        end
+      end
+
+      vim.api.nvim_set_keymap(
+        'i',
+        '<CR>',
+        'v:lua.custom_cr()',
+        { expr = true, noremap = true }
+      )
     end,
   },
   {
