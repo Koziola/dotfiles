@@ -35,8 +35,6 @@ return {
         map_cr = false,
         map_bs = true,
       })
-
-      -- Integration with nvim-cmp is done in the cmp config
     end,
   },
   {
@@ -140,87 +138,41 @@ return {
     end,
   },
   {
-    'hrsh7th/nvim-cmp',
-    dependencies = {
-      'hrsh7th/cmp-nvim-lsp',
-      'hrsh7th/cmp-path',
-      'onsails/lspkind-nvim',
-      'kyazdani42/nvim-web-devicons',
+    'saghen/blink.cmp',
+    version = '*',
+    opts = {
+      keymap = {
+        preset = 'none',
+        ['<C-Space>'] = { 'show', 'fallback' },
+        ['<CR>'] = {
+          function(cmp)
+            if cmp.is_visible() and cmp.get_selected_item() ~= nil then
+              cmp.accept()
+              return true
+            end
+          end,
+          'fallback',
+        },
+        ['<C-d>'] = { 'scroll_documentation_up', 'fallback' },
+        ['<C-f>'] = { 'scroll_documentation_down', 'fallback' },
+        ['<Tab>'] = { 'select_next', 'fallback' },
+        ['<S-Tab>'] = { 'select_prev', 'fallback' },
+        ['<C-n>'] = { 'select_next', 'fallback' },
+        ['<C-p>'] = { 'select_prev', 'fallback' },
+      },
+      appearance = {
+        use_nvim_cmp_highlights = true,
+        nerd_font_variant = 'mono',
+      },
+      sources = {
+        default = { 'lsp', 'path' },
+      },
+      completion = {
+        list = {
+          selection = { preselect = false },
+        },
+      },
     },
-    event = 'InsertEnter',
-    config = function()
-      local cmp = require('cmp')
-      local lspkind = require('lspkind')
-      lspkind.init({
-        preset = 'codicons'
-      })
-
-      cmp.setup({
-        formatting = {
-          format = lspkind.cmp_format({ mode = 'symbol_text' }),
-        },
-        mapping = cmp.mapping.preset.insert({
-          ['<C-d>'] = cmp.mapping.scroll_docs(-4),
-          ['<C-f>'] = cmp.mapping.scroll_docs(4),
-          ['<C-Space>'] = cmp.mapping.complete(),
-          ['<CR>'] = cmp.mapping(function(fallback)
-            if cmp.visible() and cmp.get_active_entry() then
-              cmp.confirm({ select = false })
-            else
-              local npairs = require('nvim-autopairs')
-              fallback()
-            end
-          end),
-          ['<Tab>'] = cmp.mapping(function(fallback)
-            if cmp.visible() then
-              cmp.select_next_item()
-            else
-              fallback()
-            end
-          end, { 'i', 's' }),
-          ['<S-Tab>'] = cmp.mapping(function(fallback)
-            if cmp.visible() then
-              cmp.select_prev_item()
-            else
-              fallback()
-            end
-          end, { 'i', 's' }),
-        }),
-        sources = {
-          { name = 'nvim_lsp' },
-          { name = 'path' },
-        },
-        sorting = {
-          comparators = {
-            cmp.config.compare.offset,
-            cmp.config.compare.exact,
-            cmp.config.compare.score,
-
-            -- Sort entries with underscores towards the bottom
-            function(entry1, entry2)
-              local _, entry1_under = entry1.completion_item.label:find "^_+"
-              local _, entry2_under = entry2.completion_item.label:find "^_+"
-              entry1_under = entry1_under or 0
-              entry2_under = entry2_under or 0
-              if entry1_under > entry2_under then
-                return false
-              elseif entry1_under < entry2_under then
-                return true
-              end
-            end,
-
-            cmp.config.compare.kind,
-            cmp.config.compare.sort_text,
-            cmp.config.compare.length,
-            cmp.config.compare.order,
-          }
-        }
-      })
-
-      -- Integrate nvim-autopairs with nvim-cmp
-      local cmp_autopairs = require('nvim-autopairs.completion.cmp')
-      cmp.event:on('confirm_done', cmp_autopairs.on_confirm_done())
-    end,
   },
   { -- Highlight, edit, and navigate code
     'nvim-treesitter/nvim-treesitter',

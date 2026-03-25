@@ -31,8 +31,6 @@ return {
         callback = function(args)
           local client = vim.lsp.get_client_by_id(args.data.client_id)
 
-          -- LSP completion is handled by nvim-cmp
-
           -- helper function for setting up buffer-local keymaps
           local nmap = function(keys, func, desc)
             vim.keymap.set("n", keys, func, { buffer = args.buf, desc = "LSP: " .. desc })
@@ -64,9 +62,7 @@ return {
         end,
       })
 
-      -- Setup capabilities for nvim-cmp
-      local capabilities = vim.lsp.protocol.make_client_capabilities()
-      capabilities = require('cmp_nvim_lsp').default_capabilities(capabilities)
+      local capabilities = require('blink.cmp').get_lsp_capabilities()
 
       -- There are performance issues with the file watcher, so disable it for now.
       if capabilities.workspace and capabilities.workspace.didChangeWatchedFiles then
@@ -74,7 +70,7 @@ return {
       end
 
 
-      local servers = { "gopls", "eslint", "stylelint_lsp" }
+      local servers = { "gopls", "eslint", "stylelint_lsp", "ruby_lsp" }
 
       -- as of 0.11
       local config = vim.lsp.config
@@ -140,6 +136,23 @@ return {
             }
           }
           vim.lsp.enable("gopls")
+        elseif lsp == "ruby_lsp" then
+          local util = require("lspconfig/util")
+          config.ruby_lsp = {
+            capabilities = capabilities,
+            filetypes = { "ruby" },
+            root_dir = function(fname)
+              local root = util.root_pattern("Gemfile", ".git")(fname)
+              if root then
+                local repo_name = vim.fn.fnamemodify(root, ":t")
+                if repo_name ~= "pay-server" then
+                  return root
+                end
+              end
+              return nil
+            end,
+          }
+          vim.lsp.enable("ruby_lsp")
         else
           config[lsp].setup({
             capabilities = capabilities,
