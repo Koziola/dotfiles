@@ -181,44 +181,35 @@ return {
     },
     config = function()
       local disable_max_size = 1500000
-      local function should_disable(lang, bufnr)
+      local function is_large_file(bufnr)
         local size = vim.fn.getfsize(vim.api.nvim_buf_get_name(bufnr or 0))
         -- size will be -2 if it doesn't fit into a number
-        if size > disable_max_size or size == -2 then
-          return true
-        end
-        return false
+        return size > disable_max_size or size == -2
       end
 
-      require('nvim-treesitter.configs').setup({
-        -- Add languages here that you want installed for treesitter
-        ensure_installed = { 'lua', 'typescript', 'tsx', 'java', 'go', 'ruby', 'bash', 'markdown' },
-        highlight = { 
-          enable = true,
-          additional_vim_regex_highlighting = false,
-          disable = should_disable,
-        },
-        indent = {
-          enable = true,
-          -- Treesitter indentation for lua files has problems
-          disable = function(lang, bufnr)
-            if lang == 'lua' then
-              return true
-            end
-            return should_disable(lang, bufnr)
+      -- nvim-treesitter v2 removed the configs module. Parser installation,
+      -- highlighting, and indentation are now configured separately.
+      require('nvim-treesitter').install({
+        'lua', 'typescript', 'tsx', 'java', 'go', 'ruby', 'bash', 'markdown',
+      })
+
+      vim.api.nvim_create_autocmd('FileType', {
+        callback = function(args)
+          if is_large_file(args.buf) then
+            return
           end
-        }
+          -- Highlighting is now nvim built-in, enabled per buffer via treesitter.start()
+          vim.treesitter.start(args.buf)
+          -- Treesitter indentation for lua files has problems
+          if vim.bo[args.buf].filetype ~= 'lua' then
+            vim.bo[args.buf].indentexpr = "v:lua.require'nvim-treesitter'.indentexpr()"
+          end
+        end,
       })
 
       require('treesitter-context').setup({
         max_lines = 10,
       })
-      
-      -- Use treesitter to manage folding code
-      -- vim.opt.foldmethod = "expr"
-      -- vim.opt.foldexpr = "nvim_treesitter#foldexpr()"
-      -- Don't fold everything by default when opening a new buffer
-      -- vim.opt.foldenable = false
     end,
   },
   { -- Code outline
