@@ -161,7 +161,7 @@ return {
         ['<C-p>'] = { 'select_prev', 'fallback' },
       },
       appearance = {
-        use_nvim_cmp_highlights = true,
+        use_nvim_cmp_as_default = true,
         nerd_font_variant = 'mono',
       },
       sources = {
