@@ -179,6 +179,9 @@ return {
     dependencies = {
       'nvim-treesitter/nvim-treesitter-context',
     },
+    -- Installs/updates parsers when the plugin itself is installed or updated.
+    -- Requires the tree-sitter CLI to be in PATH.
+    build = ':TSInstall lua typescript tsx java go ruby bash markdown',
     config = function()
       local disable_max_size = 1500000
       local function is_large_file(bufnr)
@@ -187,19 +190,14 @@ return {
         return size > disable_max_size or size == -2
       end
 
-      -- nvim-treesitter v2 removed the configs module. Parser installation,
-      -- highlighting, and indentation are now configured separately.
-      require('nvim-treesitter').install({
-        'lua', 'typescript', 'tsx', 'java', 'go', 'ruby', 'bash', 'markdown',
-      })
-
       vim.api.nvim_create_autocmd('FileType', {
         callback = function(args)
           if is_large_file(args.buf) then
             return
           end
-          -- Highlighting is now nvim built-in, enabled per buffer via treesitter.start()
-          vim.treesitter.start(args.buf)
+          -- Highlighting is now nvim built-in (v0.10+), enabled per buffer.
+          -- pcall gracefully handles filetypes with no parser installed.
+          pcall(vim.treesitter.start, args.buf)
           -- Treesitter indentation for lua files has problems
           if vim.bo[args.buf].filetype ~= 'lua' then
             vim.bo[args.buf].indentexpr = "v:lua.require'nvim-treesitter'.indentexpr()"
