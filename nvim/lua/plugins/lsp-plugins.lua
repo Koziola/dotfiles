@@ -5,9 +5,11 @@ return {
       {
         "j-hui/fidget.nvim",
         opts = {
-          text = { spinner = "dots" },
-          -- window = { relative = "editor" },
-          lsp = { log_handler = "true"}
+          progress = {
+            display = {
+              progress_icon = { "dots" },
+            },
+          },
         },
       },
       -- CSS linting
@@ -18,6 +20,64 @@ return {
       vim.lsp.set_log_level("error")
 
       local lsp_group = vim.api.nvim_create_augroup("KickstartLSP", {})
+      local navigation_requests = {
+        ["textDocument/references"] = "Finding references",
+        ["textDocument/definition"] = "Finding definition",
+        ["textDocument/implementation"] = "Finding implementation",
+        ["textDocument/declaration"] = "Finding declaration",
+        ["textDocument/typeDefinition"] = "Finding type definition",
+      }
+      local pending_requests = {}
+
+      local function stop_timer(timer)
+        if timer and not timer:is_closing() then
+          timer:stop()
+          timer:close()
+        end
+      end
+
+      vim.api.nvim_create_autocmd("LspRequest", {
+        desc = "Show progress for LSP navigation requests",
+        group = lsp_group,
+        callback = function(args)
+          local request = args.data.request
+          local label = navigation_requests[request.method]
+          if not label then
+            return
+          end
+
+          local key = string.format("%d:%d", args.data.client_id, args.data.request_id)
+          if request.type == "pending" then
+            local client = vim.lsp.get_client_by_id(args.data.client_id)
+            local handle = require("fidget.progress").handle.create({
+              title = client and client.name or "LSP",
+              message = label,
+              lsp_client = { name = client and client.name or "LSP" },
+            })
+            local timer = vim.uv.new_timer()
+            timer:start(10000, 0, vim.schedule_wrap(function()
+              handle:report({ message = label .. " (taking longer than expected)" })
+              stop_timer(timer)
+            end))
+            pending_requests[key] = { handle = handle, timer = timer }
+            return
+          end
+
+          local pending = pending_requests[key]
+          if not pending then
+            return
+          end
+
+          stop_timer(pending.timer)
+          if request.type == "complete" then
+            pending.handle:finish()
+          elseif request.type == "cancel" then
+            pending.handle:cancel()
+          end
+          pending_requests[key] = nil
+        end,
+      })
+
       -- Customize the UI of floating windows
       vim.lsp.handlers["textDocument/hover"] = vim.lsp.with(vim.lsp.handlers.hover, { border = "rounded" })
       vim.lsp.handlers["textDocument/signatureHelp"] =
