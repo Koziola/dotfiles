@@ -31,6 +31,13 @@ vim.g.maplocalleader = " "
 require('deps-lazy')
 require('keybinds')
 
-opt.background = 'dark'
 opt.termguicolors = true
-vim.cmd("colorscheme gruvbox")
+vim.cmd("colorscheme tokyonight")
+
+-- 'background' is detected from the terminal (incl. live DEC 2031 theme updates)
+vim.api.nvim_create_autocmd('OptionSet', {
+  pattern = 'background',
+  callback = function()
+    vim.cmd.colorscheme(vim.o.background == 'light' and 'rose-pine-dawn' or 'tokyonight')
+  end,
+})
